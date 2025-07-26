@@ -20,8 +20,10 @@ export type TabParamList = {
 };
 
 export type OwnerStackParamList = {
+  navigate(arg0: string, arg1: { gymId: any }): void;
   Tabs: undefined;
   MyGyms: undefined;
   Bookings: undefined;
   // другие экраны...
+  GymDetailed: { gymId: number };
 };

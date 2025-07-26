@@ -6,6 +6,7 @@ import { Provider as PaperProvider } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import OwnerHomePage from "../features/gymOwner/home/pages/OwnerHomePage";
 import { GymsListScreen } from "../features/gymOwner/gym/pages/GymsPage";
+import { GymDetailedPage } from "../features/gymOwner/gym/pages/GymDetailedPage";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -36,9 +37,9 @@ const GymOwnerTabs = () => (
           case "MyGyms":
             iconName = "dumbbell";
             break;
-          case "Bookings":
-            iconName = "clipboard-check-outline";
-            break;
+          // case "Bookings":
+          //   iconName = "clipboard-check-outline";
+          //   break;
           case "OwnerProfile":
             iconName = "account-cog-outline";
             break;
@@ -52,7 +53,7 @@ const GymOwnerTabs = () => (
   >
     <Tab.Screen name="Dashboard" component={OwnerHomePage} />
     <Tab.Screen name="MyGyms" component={GymsListScreen} />
-    <Tab.Screen name="Bookings" component={OwnerHomePage} />
+    {/* <Tab.Screen name="Bookings" component={OwnerHomePage} /> */}
     <Tab.Screen name="OwnerProfile" component={OwnerHomePage} />
   </Tab.Navigator>
 );
@@ -64,7 +65,8 @@ const GymOwnerLayout = () => {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Tabs" component={GymOwnerTabs} />
           <Stack.Screen name="EditProfile" component={OwnerHomePage} />
-          <Stack.Screen name="GymDetail" component={OwnerHomePage} />
+          {/* <Stack.Screen name="GymDetail" component={OwnerHomePage} /> */}
+          <Stack.Screen name="GymDetailed" component={GymDetailedPage} />
           {/* другие страницы, например CreateGym, EditGym и т.д. */}
         </Stack.Navigator>
       </SafeAreaProvider>
