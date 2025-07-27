@@ -11,6 +11,9 @@ import { AdminDashboardPage } from "../features/admin/dashboard/pages/AdminDashb
 import { AdminSettingsPage } from "../features/admin/settings/pages/AdminSettingsPage";
 
 import { AmenitySettingsPage } from "../features/admin/settings/pages/AmenitySettingsPage";
+import { PromoCodeList } from "../features/admin/settings/components/PromoCodeList";
+import { ServiceCategoryList } from "../features/admin/settings/components/ServiceCategoryList";
+import { AssignRolePage } from "../features/admin/settings/components/Roles";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -67,9 +70,9 @@ const AdminLayout = () => {
 
           {/* Additional Settings Pages */}
           <Stack.Screen name="AmenitySettings" component={AmenitySettingsPage} />
-          <Stack.Screen name="PromocodeSettings" component={AmenitySettingsPage} />
-          <Stack.Screen name="ServiceCategorySettings" component={AmenitySettingsPage} />
-          <Stack.Screen name="RoleSettings" component={AmenitySettingsPage} />
+          <Stack.Screen name="PromocodeSettings" component={PromoCodeList} />
+          <Stack.Screen name="ServiceCategorySettings" component={ServiceCategoryList} />
+          <Stack.Screen name="RoleSettings" component={AssignRolePage} />
           <Stack.Screen name="NotificationSettings" component={AmenitySettingsPage} />
           <Stack.Screen name="SystemInfo" component={AmenitySettingsPage} />
         </Stack.Navigator>
