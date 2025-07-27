@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView, Platform, KeyboardAvoidingView } from "react-native";
 import { Modal, Portal, Button, Text, Menu, HelperText } from "react-native-paper";
 import { Controller, useForm } from "react-hook-form";
-import { DatePickerInput, TimePickerModal } from "react-native-paper-dates";
+import { TimePickerModal, DatePickerModal } from "react-native-paper-dates";
 import { en, registerTranslation } from "react-native-paper-dates";
 
-registerTranslation("en", en); // локаль
+registerTranslation("en", en);
 
 type Service = {
   id: number;
@@ -33,7 +33,7 @@ const CreateBookingModal = ({ visible, onDismiss, onSubmit, services, gymId }: P
     setValue,
     formState: { errors },
   } = useForm<FormData>();
-
+  const [datePickerVisible, setDatePickerVisible] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
   const [timePickerVisible, setTimePickerVisible] = useState(false);
 
@@ -51,92 +51,116 @@ const CreateBookingModal = ({ visible, onDismiss, onSubmit, services, gymId }: P
 
   return (
     <Portal>
-      <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={styles.modal}>
-        <Text style={styles.title}>Create Booking</Text>
+      <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={styles.modalContainer}>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ width: "100%" }}>
+          <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+            <Text style={styles.title}>Create Booking</Text>
 
-        {/* Select Service */}
-        <Text style={styles.label}>Select Service</Text>
-        <Controller
-          control={control}
-          name="serviceId"
-          rules={{ required: "Please select a service" }}
-          render={({ field: { value } }) => (
-            <Menu
-              visible={menuVisible}
-              onDismiss={() => setMenuVisible(false)}
-              anchor={
-                <Button mode="outlined" onPress={() => setMenuVisible(true)} style={styles.dropdown}>
-                  {selectedService?.name || "Choose service"}
-                </Button>
-              }
-            >
-              {services.map(service => (
-                <Menu.Item
-                  key={service.id}
-                  onPress={() => {
-                    setValue("serviceId", service.id);
-                    setMenuVisible(false);
-                  }}
-                  title={service.name}
-                />
-              ))}
-            </Menu>
-          )}
-        />
-        {errors.serviceId && <HelperText type="error">{errors.serviceId.message}</HelperText>}
-
-        <Text style={styles.label}>Booking Date</Text>
-        <Controller
-          control={control}
-          name="bookingDate"
-          rules={{ required: "Please select a date" }}
-          render={({ field: { value, onChange } }) => (
-            <DatePickerInput
-              locale="en"
-              label="Date"
-              value={value}
-              onChange={onChange}
-              inputMode="start"
-              style={styles.input}
+            <Text style={styles.label}>Select Service</Text>
+            <Controller
+              control={control}
+              name="serviceId"
+              rules={{ required: "Please select a service" }}
+              render={({ field: { value } }) => (
+                <Menu
+                  visible={menuVisible}
+                  onDismiss={() => setMenuVisible(false)}
+                  anchor={
+                    <Button mode="outlined" onPress={() => setMenuVisible(true)} style={styles.dropdown}>
+                      {selectedService?.name || "Choose service"}
+                    </Button>
+                  }
+                >
+                  {services.map(service => (
+                    <Menu.Item
+                      key={service.id}
+                      onPress={() => {
+                        setValue("serviceId", service.id);
+                        setMenuVisible(false);
+                      }}
+                      title={service.name}
+                    />
+                  ))}
+                </Menu>
+              )}
             />
-          )}
-        />
-        {errors.bookingDate && <HelperText type="error">{errors.bookingDate.message}</HelperText>}
+            {errors.serviceId && <HelperText type="error">{errors.serviceId.message}</HelperText>}
 
-        <Text style={styles.label}>Start Time</Text>
-        <Controller
-          control={control}
-          name="startTime"
-          rules={{ required: "Please select a time" }}
-          render={({ field: { value, onChange } }) => (
-            <>
-              <Button mode="outlined" onPress={() => setTimePickerVisible(true)} style={styles.dropdown}>
-                {value || "Choose time"}
+            <Text style={styles.label}>Booking Date</Text>
+            <Controller
+              control={control}
+              name="bookingDate"
+              rules={{ required: "Please select a date" }}
+              render={({ field: { value, onChange } }) => (
+                <>
+                  <Button
+                    mode="outlined"
+                    onPress={() => setDatePickerVisible(true)}
+                    style={styles.dropdown}
+                    icon="calendar"
+                    textColor={value ? "#000" : "#999"}
+                    contentStyle={{ justifyContent: "flex-start" }}
+                    labelStyle={{ textAlign: "left", width: "100%" }}
+                  >
+                    {value ? value.toLocaleDateString() : "Choose date"}
+                  </Button>
+                  <Portal>
+                    <DatePickerModal
+                      locale="en"
+                      mode="single"
+                      visible={datePickerVisible}
+                      onDismiss={() => setDatePickerVisible(false)}
+                      date={value}
+                      onConfirm={({ date }) => {
+                        setDatePickerVisible(false);
+                        onChange(date);
+                      }}
+                      validRange={{
+                        startDate: new Date(),
+                      }}
+                    />
+                  </Portal>
+                </>
+              )}
+            />
+            {errors.bookingDate && <HelperText type="error">{errors.bookingDate.message}</HelperText>}
+
+            <Text style={styles.label}>Start Time</Text>
+            <Controller
+              control={control}
+              name="startTime"
+              rules={{ required: "Please select a time" }}
+              render={({ field: { value, onChange } }) => (
+                <>
+                  <Button mode="outlined" onPress={() => setTimePickerVisible(true)} style={styles.dropdown}>
+                    {value || "Choose time"}
+                  </Button>
+                  <TimePickerModal
+                    visible={timePickerVisible}
+                    onDismiss={() => setTimePickerVisible(false)}
+                    onConfirm={({ hours, minutes }) => {
+                      const timeStr = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+                      onChange(timeStr);
+                      setTimePickerVisible(false);
+                    }}
+                    hours={12}
+                    minutes={0}
+                  />
+                </>
+              )}
+            />
+            {errors.startTime && <HelperText type="error">{errors.startTime.message}</HelperText>}
+
+            <View style={styles.buttons}>
+              <Button onPress={onDismiss} style={styles.cancelBtn}>
+                Cancel
               </Button>
-              <TimePickerModal
-                visible={timePickerVisible}
-                onDismiss={() => setTimePickerVisible(false)}
-                onConfirm={({ hours, minutes }) => {
-                  const timeStr = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
-                  onChange(timeStr);
-                  setTimePickerVisible(false);
-                }}
-                hours={12}
-                minutes={0}
-              />
-            </>
-          )}
-        />
-        {errors.startTime && <HelperText type="error">{errors.startTime.message}</HelperText>}
-
-        <View style={styles.buttons}>
-          <Button onPress={onDismiss} style={styles.cancelBtn}>
-            Cancel
-          </Button>
-          <Button mode="contained" onPress={handleSubmit(handleBooking)} style={styles.submitBtn}>
-            Book Now
-          </Button>
-        </View>
+              <Button mode="contained" onPress={handleSubmit(handleBooking)} style={styles.submitBtn}>
+                Book Now
+              </Button>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </Modal>
     </Portal>
   );
@@ -145,11 +169,17 @@ const CreateBookingModal = ({ visible, onDismiss, onSubmit, services, gymId }: P
 export default CreateBookingModal;
 
 const styles = StyleSheet.create({
-  modal: {
+  modalContainer: {
     backgroundColor: "white",
+    borderRadius: 16,
     padding: 24,
-    margin: 20,
-    borderRadius: 12,
+    marginHorizontal: 20,
+    width: "90%",
+    alignSelf: "center",
+    maxHeight: "90%",
+  },
+  scrollContent: {
+    paddingBottom: 24,
   },
   title: {
     fontSize: 20,
@@ -163,6 +193,7 @@ const styles = StyleSheet.create({
   dropdown: {
     justifyContent: "center",
     marginBottom: 12,
+    borderRadius: 8,
   },
   input: {
     marginBottom: 12,

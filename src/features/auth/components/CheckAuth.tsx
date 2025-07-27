@@ -1,7 +1,5 @@
 import React, { ReactElement, FC } from "react";
 import { Identifier } from "../../../types/Identifier";
-import LoginPage from "../pages/LoginPage";
-import { Text } from "react-native";
 
 type ComponentWithUserId = FC<{ userId: Identifier }>;
 

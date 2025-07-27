@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { Button } from "react-native-paper";
+import { Button, Portal } from "react-native-paper";
 import { useCreateBooking } from "../../bookings/hooks";
 import CreateBookingModal from "../../bookings/components/CreateBookingModal";
 
@@ -47,14 +47,16 @@ const GymDetailPage = () => {
           </ScrollView>
         </View>
       )}
+      <Portal>
+        <CreateBookingModal
+          visible={modalVisible}
+          onDismiss={() => setModalVisible(false)}
+          onSubmit={booking => createBooking(booking)}
+          services={gym.services}
+          gymId={gym.id}
+        />
+      </Portal>
 
-      <CreateBookingModal
-        visible={modalVisible}
-        onDismiss={() => setModalVisible(false)}
-        onSubmit={booking => createBooking(booking)}
-        services={gym.services}
-        gymId={gym.id}
-      />
       <Button
         mode="contained"
         onPress={() => setModalVisible(true)}

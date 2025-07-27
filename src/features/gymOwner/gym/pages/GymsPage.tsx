@@ -6,17 +6,20 @@ import { Gym } from "../types/Gym";
 import { GymCard } from "../componets/GymCard";
 import { CreateGymModal } from "../componets/CreateGymModal";
 import { EditGymModal } from "../componets/EditGymModal";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { OwnerStackParamList } from "../../../../types/RootStackParamList";
 
 export const GymsListScreen = () => {
   const { data: gyms = [], isLoading } = useFetchAllGym();
   const { mutate: createGym } = useCreateGym();
-  if (isLoading) {
-    return <Text>Загрузка...</Text>;
-  }
   const [createVisible, setCreateVisible] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
   const [selectedGym, setSelectedGym] = useState<Gym>({} as Gym);
-
+  const navigation = useNavigation<NativeStackNavigationProp<OwnerStackParamList>>();
+  if (isLoading) {
+    return <Text>Загрузка...</Text>;
+  }
   const handleCreate = (data: any) => {
     createGym(data);
     setCreateVisible(false);
@@ -44,6 +47,7 @@ export const GymsListScreen = () => {
             setSelectedGym(gym);
             setEditVisible(true);
           }}
+          onPress={() => navigation.navigate("GymDetailed", { gymId: gym.id })}
         />
       ))}
 
