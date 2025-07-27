@@ -4,14 +4,18 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as PaperProvider } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import OwnerHomePage from "../features/gymOwner/home/pages/OwnerHomePage";
-import { GymsListScreen } from "../features/gymOwner/gym/pages/GymsPage";
-import { GymDetailedPage } from "../features/gymOwner/gym/pages/GymDetailedPage";
+
+// Pages
+import { UsersListPage } from "../features/admin/users/pages/UsersPage";
+import { AdminDashboardPage } from "../features/admin/dashboard/pages/AdminDashboardPage";
+import { AdminSettingsPage } from "../features/admin/settings/pages/AdminSettingsPage";
+
+import { AmenitySettingsPage } from "../features/admin/settings/pages/AmenitySettingsPage";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const GymOwnerTabs = () => (
+const AdminTabs = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
       headerShown: true,
@@ -34,14 +38,11 @@ const GymOwnerTabs = () => (
           case "Dashboard":
             iconName = "view-dashboard-outline";
             break;
-          case "MyGyms":
-            iconName = "dumbbell";
+          case "Users":
+            iconName = "account-group-outline";
             break;
-          // case "Bookings":
-          //   iconName = "clipboard-check-outline";
-          //   break;
-          case "AdminLayout":
-            iconName = "account-cog-outline";
+          case "Settings":
+            iconName = "cog-outline";
             break;
           default:
             iconName = "help-circle-outline";
@@ -51,27 +52,30 @@ const GymOwnerTabs = () => (
       },
     })}
   >
-    <Tab.Screen name="Dashboard" component={OwnerHomePage} />
-    <Tab.Screen name="MyGyms" component={GymsListScreen} />
-    {/* <Tab.Screen name="Bookings" component={OwnerHomePage} /> */}
-    <Tab.Screen name="OwnerProfile" component={OwnerHomePage} />
+    <Tab.Screen name="Dashboard" component={AdminDashboardPage} />
+    <Tab.Screen name="Users" component={UsersListPage} />
+    <Tab.Screen name="Settings" component={AdminSettingsPage} />
   </Tab.Navigator>
 );
 
-const GymOwnerLayout = () => {
+const AdminLayout = () => {
   return (
     <PaperProvider>
       <SafeAreaProvider>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Tabs" component={GymOwnerTabs} />
-          <Stack.Screen name="EditProfile" component={OwnerHomePage} />
-          {/* <Stack.Screen name="GymDetail" component={OwnerHomePage} /> */}
-          <Stack.Screen name="GymDetailed" component={GymDetailedPage} />
-          {/* другие страницы, например CreateGym, EditGym и т.д. */}
+          <Stack.Screen name="AdminTabs" component={AdminTabs} />
+
+          {/* Additional Settings Pages */}
+          <Stack.Screen name="AmenitySettings" component={AmenitySettingsPage} />
+          <Stack.Screen name="PromocodeSettings" component={AmenitySettingsPage} />
+          <Stack.Screen name="ServiceCategorySettings" component={AmenitySettingsPage} />
+          <Stack.Screen name="RoleSettings" component={AmenitySettingsPage} />
+          <Stack.Screen name="NotificationSettings" component={AmenitySettingsPage} />
+          <Stack.Screen name="SystemInfo" component={AmenitySettingsPage} />
         </Stack.Navigator>
       </SafeAreaProvider>
     </PaperProvider>
   );
 };
 
-export default GymOwnerLayout;
+export default AdminLayout;
