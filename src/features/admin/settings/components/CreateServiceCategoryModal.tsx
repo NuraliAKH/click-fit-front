@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
-import { Modal, Portal, Text, TextInput, Button } from "react-native-paper";
+import { StyleSheet } from "react-native";
+import { Modal, Text, Input, Button, Layout } from "@ui-kitten/components";
 import { useCreateServiceCategory } from "../hooks/serviceCategoryHooks";
 
 interface Props {
@@ -33,33 +33,41 @@ export const CreateServiceCategoryModal = ({ visible, onDismiss }: Props) => {
   };
 
   return (
-    <Portal>
-      <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={styles.modal}>
-        <Text style={styles.title}>Создать категорию</Text>
-        <TextInput label="Тип (уникальный)" value={type} onChangeText={setType} style={styles.input} />
-        <TextInput label="Название" value={name} onChangeText={setName} style={styles.input} />
-        <TextInput label="Иконка (название)" value={icon} onChangeText={setIcon} style={styles.input} />
-        <TextInput label="Цвет (#HEX)" value={color} onChangeText={setColor} style={styles.input} />
-        <Button mode="contained" onPress={handleSubmit} loading={isPending} disabled={isPending}>
-          Создать
+    <Modal visible={visible} backdropStyle={styles.backdrop} onBackdropPress={onDismiss}>
+      <Layout style={styles.modal} level="1">
+        <Text category="h6" style={styles.title}>
+          Создать категорию
+        </Text>
+        <Input label="Тип (уникальный)" value={type} onChangeText={setType} style={styles.input} />
+        <Input label="Название" value={name} onChangeText={setName} style={styles.input} />
+        <Input label="Иконка (название) " value={icon} onChangeText={setIcon} style={styles.input} />
+        <Input label="Цвет (#HEX)" value={color} onChangeText={setColor} style={styles.input} />
+        <Button onPress={handleSubmit} disabled={isPending} style={styles.button}>
+          {isPending ? "Создание..." : "Создать"}
         </Button>
-      </Modal>
-    </Portal>
+      </Layout>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
   modal: {
-    backgroundColor: "white",
-    margin: 20,
+    width: "100%",
     borderRadius: 12,
     padding: 20,
+    paddingBottom: 100,
+  },
+  backdrop: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   title: {
-    fontSize: 18,
-    marginBottom: 12,
+    marginBottom: 16,
+    textAlign: "center",
   },
   input: {
     marginBottom: 12,
+  },
+  button: {
+    marginTop: 8,
   },
 });

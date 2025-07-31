@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
-import { Text, List, IconButton, Divider, Chip, Button } from "react-native-paper";
+import { Text, Button, Card } from "@ui-kitten/components";
+import { useFetchAllPromoCode, useDeletePromoCode } from "../hooks/promoCodeHooks";
 import { CreatePromoCodeModal } from "./CreatePromoCodeModal";
-import { useDeletePromoCode, useFetchAllPromoCode } from "../hooks/promoCodeHooks";
+import VectorIcon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export const PromoCodeList = () => {
   const { data, isLoading, isError } = useFetchAllPromoCode();
@@ -22,9 +23,52 @@ export const PromoCodeList = () => {
     }
   };
 
+  const renderItem = ({ item }: any) => (
+    <Card
+      style={styles.card}
+      header={() => (
+        <View style={styles.header}>
+          <Text category="s1">
+            {item.code} {item.isActive ? "" : "(неактивен)"}
+          </Text>
+          <VectorIcon name="delete-outline" size={24} color="#e74c3c" onPress={() => deletePromoCode(item.id)} />
+        </View>
+      )}
+    >
+      <Text appearance="hint">
+        Тип: {item.type} | {renderTypeLabel(item.type, item.value)}
+      </Text>
+      <Text appearance="hint" style={styles.dates}>
+        Срок: {new Date(item.validFrom).toLocaleDateString()} - {new Date(item.validTo).toLocaleDateString()}
+      </Text>
+      <View style={styles.metaRow}>
+        {!!item.minAmount && (
+          <View style={styles.chip}>
+            <VectorIcon name="currency-usd" size={16} />
+            <Text style={{ marginLeft: 4 }}>Мин: {item.minAmount / 100} сум</Text>
+          </View>
+        )}
+        {!!item.maxDiscount && (
+          <View style={styles.chip}>
+            <VectorIcon name="sale" size={16} />
+            <Text style={{ marginLeft: 4 }}>Макс: {item.maxDiscount / 100} сум</Text>
+          </View>
+        )}
+        {!!item.usageLimit && (
+          <View style={styles.chip}>
+            <VectorIcon name="repeat" size={16} />
+            <Text style={{ marginLeft: 4 }}>
+              Использовано: {item.usageCount}/{item.usageLimit}
+            </Text>
+          </View>
+        )}
+      </View>
+    </Card>
+  );
+
   if (isLoading) {
     return (
-      <View style={styles.centered}>
+      <View style={styles.center}>
         <Text>Загрузка...</Text>
       </View>
     );
@@ -32,53 +76,23 @@ export const PromoCodeList = () => {
 
   if (isError) {
     return (
-      <View style={styles.centered}>
-        <Text>Ошибка при загрузке промокодов</Text>
+      <View style={styles.center}>
+        <Text status="danger">Ошибка при загрузке</Text>
       </View>
     );
   }
 
   return (
     <View style={{ flex: 1 }}>
-      <Button mode="contained" style={styles.createButton} onPress={() => setModalVisible(true)}>
+      <Button style={styles.createButton} onPress={() => setModalVisible(true)}>
         Создать промокод
       </Button>
 
       <FlatList
         data={data?.data || []}
+        renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
         contentContainerStyle={styles.list}
-        renderItem={({ item }) => (
-          <View style={styles.itemContainer}>
-            <List.Item
-              title={`${item.code} ${item.isActive ? "" : "(неактивен)"}`}
-              description={`Тип: ${item.type} | ${renderTypeLabel(item.type, item.value)}\nСрок: ${new Date(
-                item.validFrom
-              ).toLocaleDateString()} - ${new Date(item.validTo).toLocaleDateString()}`}
-              right={() => (
-                <IconButton icon="delete-outline" onPress={() => deletePromoCode(item.id)} iconColor="#e74c3c" />
-              )}
-            />
-            <View style={styles.metaRow}>
-              {item.minAmount && (
-                <Chip style={styles.chip} icon="currency-usd">
-                  Мин: {item.minAmount / 100} сум
-                </Chip>
-              )}
-              {item.maxDiscount && (
-                <Chip style={styles.chip} icon="sale">
-                  Макс: {item.maxDiscount / 100} сум
-                </Chip>
-              )}
-              {item.usageLimit && (
-                <Chip style={styles.chip} icon="repeat">
-                  Использовано: {item.usageCount}/{item.usageLimit}
-                </Chip>
-              )}
-            </View>
-            <Divider />
-          </View>
-        )}
       />
 
       <CreatePromoCodeModal visible={modalVisible} onDismiss={() => setModalVisible(false)} />
@@ -87,35 +101,32 @@ export const PromoCodeList = () => {
 };
 
 const styles = StyleSheet.create({
-  list: {
-    padding: 16,
-    backgroundColor: "#fff",
-  },
-  itemContainer: {
-    marginBottom: 12,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 12,
-    overflow: "hidden",
+  list: { padding: 16 },
+  createButton: { margin: 16, borderRadius: 8 },
+  card: { marginBottom: 12, borderRadius: 12 },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 8,
   },
   metaRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    paddingHorizontal: 16,
-    paddingBottom: 12,
+    marginTop: 8,
     gap: 8,
   },
   chip: {
-    marginRight: 8,
-    marginTop: 4,
-    backgroundColor: "#ecf0f1",
+    padding: 4,
+    backgroundColor: "#f0f0f0",
+    borderRadius: 8,
   },
-  centered: {
+  center: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  createButton: {
-    margin: 16,
-    borderRadius: 8,
+  dates: {
+    marginTop: 4,
   },
 });
