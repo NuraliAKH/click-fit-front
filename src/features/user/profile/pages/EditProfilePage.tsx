@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { TopNavigation, TopNavigationAction, Icon, Layout } from "@ui-kitten/components";
+import { TopNavigation, TopNavigationAction, Layout } from "@ui-kitten/components";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 import EditProfileComponent from "../components/EditProfileComponent";
 import useEditProfile from "../hooks/useEditProfile";
@@ -21,7 +22,7 @@ const EditProfilePage = () => {
     }
   }, [success]);
 
-  const BackIcon = (props: any) => <Icon {...props} name="arrow-back-outline" />;
+  const BackIcon = () => <Ionicons name="arrow-back" size={24} color="#222" />;
 
   const renderBackAction = () => <TopNavigationAction icon={BackIcon} onPress={() => navigation.goBack()} />;
 

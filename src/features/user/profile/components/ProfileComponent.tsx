@@ -5,14 +5,13 @@ import { styles } from "../styles/profileStyles";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { UserLayoutStackParamList } from "../../../../types/RootStackParamList";
-
+import FeatherIcon from "react-native-vector-icons/Feather";
 interface Props {
   user: any;
   loading: boolean;
-  onEdit?: () => void;
 }
 
-const ProfileComponent = ({ user, loading, onEdit }: Props) => {
+const ProfileComponent = ({ user, loading }: Props) => {
   const navigation = useNavigation<NativeStackNavigationProp<UserLayoutStackParamList>>();
 
   if (loading) {
@@ -37,7 +36,7 @@ const ProfileComponent = ({ user, loading, onEdit }: Props) => {
       </Text>
 
       <Button
-        accessoryLeft={props => <Icon {...props} name="edit-2-outline" fill="#fff" style={{ width: 20, height: 20 }} />}
+        accessoryLeft={() => <FeatherIcon name="edit" size={20} color="#fff" />}
         style={styles.editButton}
         onPress={() => navigation.navigate("EditProfile")}
       >

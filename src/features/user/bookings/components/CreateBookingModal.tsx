@@ -48,141 +48,142 @@ const CreateBookingModal = ({ visible, onDismiss, onSubmit, services, gymId }: P
   };
 
   return (
-    <Modal visible={visible} backdropStyle={styles.backdrop} onBackdropPress={onDismiss}>
-      <Card disabled={true} style={styles.card}>
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined}>
-          <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
-            <Text category="h6" style={styles.title}>
-              Create Booking
-            </Text>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Modal visible={visible} backdropStyle={styles.backdrop} onBackdropPress={onDismiss}>
+        <Card disabled={true} style={styles.card}>
+          <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined}>
+            <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
+              <Text category="h6" style={styles.title}>
+                Create Booking
+              </Text>
 
-            {/* Service Dropdown */}
-            <Text category="label">Select Service</Text>
-            <Controller
-              control={control}
-              name="serviceId"
-              rules={{ required: "Please select a service" }}
-              render={({ field: { onChange } }) => (
-                <>
-                  <Select
-                    selectedIndex={selectedServiceIndex}
-                    onSelect={index => {
-                      let rowIndex: number | undefined;
-                      if (Array.isArray(index)) {
-                        rowIndex = index[0]?.row;
-                        setSelectedServiceIndex(index[0]);
-                      } else {
-                        rowIndex = index.row;
-                        setSelectedServiceIndex(index as IndexPath);
-                      }
-                      if (rowIndex !== undefined) {
-                        const service = services[rowIndex];
-                        onChange(service.id);
-                      }
-                    }}
-                    placeholder="Choose service"
-                    style={styles.input}
-                  >
-                    {services.map(service => (
-                      <SelectItem key={service.id} title={service.name} />
-                    ))}
-                  </Select>
-                  {errors.serviceId && (
-                    <Text status="danger" category="c1">
-                      {errors.serviceId.message}
-                    </Text>
-                  )}
-                </>
-              )}
-            />
-
-            {/* Date Picker */}
-            <Text category="label" style={{ marginTop: 16 }}>
-              Booking Date
-            </Text>
-            <Controller
-              control={control}
-              name="bookingDate"
-              rules={{ required: "Please select a date" }}
-              render={({ field: { onChange, value } }) => (
-                <>
-                  <Button appearance="outline" onPress={() => setShowDatePicker(true)} style={styles.input}>
-                    {value ? value.toDateString() : "Choose Date"}
-                  </Button>
-                  {showDatePicker && (
-                    <DateTimePicker
-                      value={value || new Date()}
-                      mode="date"
-                      display="default"
-                      minimumDate={new Date()}
-                      onChange={(selectedDate: any) => {
-                        setShowDatePicker(false);
-                        if (selectedDate) {
-                          setDate(selectedDate);
-                          onChange(selectedDate);
+              {/* Service Dropdown */}
+              <Text category="label">Select Service</Text>
+              <Controller
+                control={control}
+                name="serviceId"
+                rules={{ required: "Please select a service" }}
+                render={({ field: { onChange } }) => (
+                  <>
+                    <Select
+                      selectedIndex={selectedServiceIndex}
+                      onSelect={index => {
+                        let rowIndex: number | undefined;
+                        if (Array.isArray(index)) {
+                          rowIndex = index[0]?.row;
+                          setSelectedServiceIndex(index[0]);
+                        } else {
+                          rowIndex = index.row;
+                          setSelectedServiceIndex(index as IndexPath);
+                        }
+                        if (rowIndex !== undefined) {
+                          const service = services[rowIndex];
+                          onChange(service.id);
                         }
                       }}
-                    />
-                  )}
-                  {errors.bookingDate && (
-                    <Text status="danger" category="c1">
-                      {errors.bookingDate.message}
-                    </Text>
-                  )}
-                </>
-              )}
-            />
+                      placeholder="Choose service"
+                      style={styles.input}
+                    >
+                      {services.map(service => (
+                        <SelectItem key={service.id} title={service.name} />
+                      ))}
+                    </Select>
+                    {errors.serviceId && (
+                      <Text status="danger" category="c1">
+                        {errors.serviceId.message}
+                      </Text>
+                    )}
+                  </>
+                )}
+              />
 
-            {/* Time Picker */}
-            <Text category="label" style={{ marginTop: 16 }}>
-              Start Time
-            </Text>
-            <Controller
-              control={control}
-              name="startTime"
-              rules={{ required: "Please select a time" }}
-              render={({ field: { onChange, value } }) => (
-                <>
-                  <Button appearance="outline" onPress={() => setShowTimePicker(true)} style={styles.input}>
-                    {value || "Choose Time"}
-                  </Button>
-                  {showTimePicker && (
-                    <DateTimePicker
-                      value={new Date()}
-                      mode="time"
-                      display="default"
-                      onChange={(selectedTime: any) => {
-                        setShowTimePicker(false);
-                        if (selectedTime) {
-                          const hours = selectedTime.getHours().toString().padStart(2, "0");
-                          const minutes = selectedTime.getMinutes().toString().padStart(2, "0");
-                          const formatted = `${hours}:${minutes}`;
-                          setStartTime(formatted);
-                          onChange(formatted);
-                        }
-                      }}
-                    />
-                  )}
-                  {errors.startTime && (
-                    <Text status="danger" category="c1">
-                      {errors.startTime.message}
-                    </Text>
-                  )}
-                </>
-              )}
-            />
+              <Text category="label" style={{ marginTop: 16 }}>
+                Booking Date
+              </Text>
+              <Controller
+                control={control}
+                name="bookingDate"
+                rules={{ required: "Please select a date" }}
+                render={({ field: { onChange, value } }) => (
+                  <>
+                    <Button appearance="outline" onPress={() => setShowDatePicker(true)} style={styles.input}>
+                      {value ? value.toDateString() : "Choose Date"}
+                    </Button>
+                    {showDatePicker && (
+                      <DateTimePicker
+                        value={value || new Date()}
+                        mode="date"
+                        display="default"
+                        minimumDate={new Date()}
+                        onChange={(_, selectedDate) => {
+                          setShowDatePicker(false);
+                          if (selectedDate) {
+                            setDate(selectedDate);
+                            onChange(selectedDate);
+                          }
+                        }}
+                      />
+                    )}
+                    {errors.bookingDate && (
+                      <Text status="danger" category="c1">
+                        {errors.bookingDate.message}
+                      </Text>
+                    )}
+                  </>
+                )}
+              />
 
-            {/* Buttons */}
-            <View style={styles.buttons}>
-              <Button appearance="ghost" onPress={onDismiss} style={styles.cancelBtn}>
-                Cancel
-              </Button>
-              <Button onPress={handleSubmit(handleBooking)}>Book Now</Button>
-            </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </Card>
-    </Modal>
+              {/* Time Picker */}
+              <Text category="label" style={{ marginTop: 16 }}>
+                Start Time
+              </Text>
+              <Controller
+                control={control}
+                name="startTime"
+                rules={{ required: "Please select a time" }}
+                render={({ field: { onChange, value } }) => (
+                  <>
+                    <Button appearance="outline" onPress={() => setShowTimePicker(true)} style={styles.input}>
+                      {value || "Choose Time"}
+                    </Button>
+                    {showTimePicker && (
+                      <DateTimePicker
+                        value={new Date()}
+                        mode="time"
+                        display="default"
+                        onChange={(_, selectedDate) => {
+                          setShowTimePicker(false);
+                          if (selectedDate) {
+                            const hours = selectedDate.getHours().toString().padStart(2, "0");
+                            const minutes = selectedDate.getMinutes().toString().padStart(2, "0");
+                            const formatted = `${hours}:${minutes}`;
+                            setStartTime(formatted);
+                            onChange(formatted);
+                          }
+                        }}
+                      />
+                    )}
+                    {errors.startTime && (
+                      <Text status="danger" category="c1">
+                        {errors.startTime.message}
+                      </Text>
+                    )}
+                  </>
+                )}
+              />
+
+              {/* Buttons */}
+              <View style={styles.buttons}>
+                <Button appearance="ghost" onPress={onDismiss} style={styles.cancelBtn}>
+                  Cancel
+                </Button>
+                <Button onPress={handleSubmit(handleBooking)}>Book Now</Button>
+              </View>
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </Card>
+      </Modal>
+    </View>
   );
 };
 
@@ -190,7 +191,7 @@ export default CreateBookingModal;
 
 const styles = StyleSheet.create({
   card: {
-    width: "90%",
+    width: "100%",
     alignSelf: "center",
     borderRadius: 12,
     paddingVertical: 16,
@@ -212,6 +213,7 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   backdrop: {
+    width: "100%",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
 });
