@@ -6,6 +6,8 @@ import AppRoutes from "./src/routes/AppRoutes";
 import { SocketProvider } from "./src/hooks/useSocket";
 import { DefaultTheme, DarkTheme, Theme as NavigationTheme } from "@react-navigation/native";
 import { SafeAreaView } from "react-native";
+import { ApplicationProvider } from "@ui-kitten/components";
+import * as eva from "@eva-design/eva";
 
 const queryClient = new QueryClient();
 
@@ -13,6 +15,7 @@ const ThemedApp = () => {
   const { isDarkMode } = useTheme();
 
   const baseTheme = isDarkMode ? DarkTheme : DefaultTheme;
+  const evaTheme = isDarkMode ? eva.dark : eva.light;
 
   const theme: NavigationTheme = {
     ...baseTheme,
@@ -27,12 +30,14 @@ const ThemedApp = () => {
   };
 
   return (
-    <NavigationContainer theme={theme}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <AppRoutes />
-        <Toast />
-      </SafeAreaView>
-    </NavigationContainer>
+    <ApplicationProvider {...eva} theme={evaTheme}>
+      <NavigationContainer theme={theme}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <AppRoutes />
+          <Toast />
+        </SafeAreaView>
+      </NavigationContainer>
+    </ApplicationProvider>
   );
 };
 

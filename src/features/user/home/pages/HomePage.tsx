@@ -1,29 +1,25 @@
 import React from "react";
 import { View } from "react-native";
-import { Text, Card, Button } from "react-native-paper";
+import { Layout, Card, Text, Button } from "@ui-kitten/components";
 
 const HomePage = () => {
   return (
-    <View style={{ padding: 16 }}>
+    <Layout style={{ flex: 1, padding: 16 }}>
       <Card style={{ marginBottom: 16 }}>
-        <Card.Title title="Welcome!" />
-        <Card.Content>
-          <Text>Ready for your next workout?</Text>
-        </Card.Content>
-        <Card.Actions>
-          <Button mode="contained" onPress={() => {}}>
-            Book a Session
-          </Button>
-        </Card.Actions>
+        <Text category="h5" style={{ marginBottom: 8 }}>
+          Welcome!
+        </Text>
+        <Text style={{ marginBottom: 16 }}>Ready for your next workout?</Text>
+        <Button onPress={() => {}}>Book a Session</Button>
       </Card>
 
       <Card>
-        <Card.Title title="Active Membership" />
-        <Card.Content>
-          <Text>Unlimited access to gyms until Aug 25</Text>
-        </Card.Content>
+        <Text category="h6" style={{ marginBottom: 8 }}>
+          Active Membership
+        </Text>
+        <Text appearance="hint">Unlimited access to gyms until Aug 25</Text>
       </Card>
-    </View>
+    </Layout>
   );
 };
 

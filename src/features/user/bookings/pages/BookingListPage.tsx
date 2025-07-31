@@ -1,37 +1,54 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import { useFetchAllBooking } from "../hooks";
 import BookingCard from "../components/BookingCard";
+import { Text, Button, Spinner } from "@ui-kitten/components";
 
 const FILTERS = ["All", "Pending", "Confirmed", "Cancelled"];
 
 const BookingListPage = () => {
   const [filter, setFilter] = useState<string>("All");
   const { data: bookings, isLoading, isError } = useFetchAllBooking();
+
   const filteredBookings =
     filter === "All" ? bookings : bookings?.filter((b: any) => b.status.toLowerCase() === filter.toLowerCase());
 
   if (isLoading) {
-    return <ActivityIndicator size="large" color="#2ecc71" style={styles.loader} />;
+    return (
+      <View style={styles.loader}>
+        <Spinner size="giant" />
+      </View>
+    );
   }
 
   if (isError) {
-    return <Text style={styles.error}>❌ Error loading bookings</Text>;
+    return (
+      <View style={styles.loader}>
+        <Text status="danger" category="h6">
+          ❌ Error loading bookings
+        </Text>
+      </View>
+    );
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>My Bookings</Text>
+      <Text category="h5" style={styles.title}>
+        My Bookings
+      </Text>
 
       <View style={styles.filterContainer}>
         {FILTERS.map(status => (
-          <TouchableOpacity
+          <Button
             key={status}
+            size="small"
+            appearance={filter === status ? "filled" : "outline"}
+            status={filter === status ? "success" : "basic"}
+            style={styles.filterButton}
             onPress={() => setFilter(status)}
-            style={[styles.filterButton, filter === status && styles.activeFilter]}
           >
-            <Text style={filter === status ? styles.activeFilterText : styles.filterText}>{status}</Text>
-          </TouchableOpacity>
+            {status}
+          </Button>
         ))}
       </View>
 
@@ -51,46 +68,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#f4f6f8",
   },
   title: {
-    fontSize: 24,
-    fontWeight: "700",
     marginBottom: 16,
-    color: "#2c3e50",
   },
   loader: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  error: {
-    marginTop: 50,
-    textAlign: "center",
-    fontSize: 18,
-    color: "#e74c3c",
-  },
   filterContainer: {
     flexDirection: "row",
-    marginBottom: 16,
-    gap: 8,
     flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 16,
   },
   filterButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    marginRight: 8,
+    marginBottom: 8,
     borderRadius: 20,
-    backgroundColor: "#ecf0f1",
-  },
-  activeFilter: {
-    backgroundColor: "#2ecc71",
-  },
-  filterText: {
-    color: "#34495e",
-    fontWeight: "500",
-  },
-  activeFilterText: {
-    color: "#fff",
-    fontWeight: "600",
   },
 });

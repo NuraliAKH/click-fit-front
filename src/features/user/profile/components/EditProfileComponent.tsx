@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View } from "react-native";
+import { Input, Layout, Text, Button, Spinner } from "@ui-kitten/components";
 import { styles } from "../styles/editProfileStyles";
 
 interface Props {
@@ -10,44 +11,50 @@ interface Props {
   };
   loading: boolean;
   onChange: (key: keyof Props["form"], value: string) => void;
-  onSubmit: any;
+  onSubmit: () => void;
 }
 
 const EditProfileComponent = ({ onSubmit, form, loading, onChange }: Props) => {
   if (loading) {
-    return <ActivityIndicator style={{ marginTop: 100 }} size="large" color="#0EA5E9" />;
+    return (
+      <Layout style={styles.loader}>
+        <Spinner size="giant" />
+      </Layout>
+    );
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Редактировать профиль</Text>
+    <Layout style={styles.container}>
+      <Text category="h5" style={styles.title}>
+        Редактировать профиль
+      </Text>
 
-      <TextInput
+      <Input
         style={styles.input}
         placeholder="Имя"
         value={form.firstName}
         onChangeText={text => onChange("firstName", text)}
       />
 
-      <TextInput
+      <Input
         style={styles.input}
         placeholder="Фамилия"
         value={form.lastName}
         onChangeText={text => onChange("lastName", text)}
       />
 
-      <TextInput
+      <Input
         style={styles.input}
         placeholder="Телефон"
         value={form.phone}
-        onChangeText={text => onChange("phone", text)}
         keyboardType="phone-pad"
+        onChangeText={text => onChange("phone", text)}
       />
 
-      <TouchableOpacity style={styles.saveButton} onPress={onSubmit}>
-        <Text style={styles.saveButtonText}>Сохранить</Text>
-      </TouchableOpacity>
-    </View>
+      <Button style={styles.saveButton} onPress={onSubmit}>
+        Сохранить
+      </Button>
+    </Layout>
   );
 };
 

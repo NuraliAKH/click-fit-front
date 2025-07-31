@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
-import { View, Button } from "react-native";
+import { ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { TopNavigation, TopNavigationAction, Icon, Layout } from "@ui-kitten/components";
+
 import EditProfileComponent from "../components/EditProfileComponent";
 import useEditProfile from "../hooks/useEditProfile";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../types/RootStackParamList";
 
 const EditProfilePage = () => {
@@ -19,16 +21,18 @@ const EditProfilePage = () => {
     }
   }, [success]);
 
-  return (
-    <View style={{ flex: 1 }}>
-      {/* Кнопка Назад */}
-      <View style={{ padding: 10 }}>
-        <Button title="Назад" onPress={() => navigation.goBack()} />
-      </View>
+  const BackIcon = (props: any) => <Icon {...props} name="arrow-back-outline" />;
 
-      {/* Компонент формы */}
-      <EditProfileComponent onSubmit={onSave} {...rest} />
-    </View>
+  const renderBackAction = () => <TopNavigationAction icon={BackIcon} onPress={() => navigation.goBack()} />;
+
+  return (
+    <Layout style={{ flex: 1 }}>
+      <TopNavigation alignment="center" title="Редактировать профиль" accessoryLeft={renderBackAction} />
+
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32 }}>
+        <EditProfileComponent onSubmit={onSave} {...rest} />
+      </ScrollView>
+    </Layout>
   );
 };
 

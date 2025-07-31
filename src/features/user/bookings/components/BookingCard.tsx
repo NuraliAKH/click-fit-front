@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
+import { Card, Layout, Text } from "@ui-kitten/components";
 
 type Booking = {
   id: number;
@@ -12,15 +13,19 @@ type Booking = {
 
 const BookingCard = ({ booking }: { booking: Booking }) => {
   return (
-    <View style={styles.card}>
-      <View style={styles.header}>
-        <Text style={styles.service}>{booking.service.name}</Text>
+    <Card style={styles.card}>
+      <Layout style={styles.header}>
+        <Text category="h6" style={styles.service}>
+          {booking.service.name}
+        </Text>
         <Text style={[styles.status, getStatusStyle(booking.status)]}>{booking.status}</Text>
-      </View>
-      <Text style={styles.gym}>🏋️ {booking.gym.name}</Text>
-      <Text style={styles.date}>📅 {booking.bookingDate}</Text>
-      <Text style={styles.time}>⏰ {booking.startTime}</Text>
-    </View>
+      </Layout>
+      <Text category="s1">🏋️ {booking.gym.name}</Text>
+      <Text category="p2" style={styles.date}>
+        📅 {booking.bookingDate}
+      </Text>
+      <Text category="p2">⏰ {booking.startTime}</Text>
+    </Card>
   );
 };
 
@@ -41,11 +46,8 @@ const getStatusStyle = (status: string) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
-    padding: 16,
-    borderRadius: 12,
     marginBottom: 12,
-    elevation: 2,
+    borderRadius: 12,
   },
   header: {
     flexDirection: "row",
@@ -53,25 +55,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   service: {
-    fontSize: 18,
     fontWeight: "600",
-    color: "#2c3e50",
   },
   status: {
-    fontSize: 14,
     fontWeight: "500",
   },
-  gym: {
-    fontSize: 16,
-    color: "#34495e",
-  },
   date: {
-    fontSize: 14,
-    color: "#7f8c8d",
     marginTop: 4,
-  },
-  time: {
-    fontSize: 14,
-    color: "#7f8c8d",
   },
 });

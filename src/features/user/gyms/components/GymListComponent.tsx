@@ -1,5 +1,6 @@
 import React from "react";
-import { FlatList, View, Text, Image, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
+import { FlatList, View, Image } from "react-native";
+import { Spinner, Card, Text, Layout } from "@ui-kitten/components";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -28,27 +29,35 @@ type RootStackParamList = {
 const GymListComponent = ({ gyms, isLoading }: Props) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  if (isLoading) return <ActivityIndicator size="large" style={styles.loader} color="#2ecc71" />;
+  if (isLoading) {
+    return (
+      <Layout style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Spinner size="giant" />
+      </Layout>
+    );
+  }
 
   return (
     <FlatList
       data={gyms}
       keyExtractor={item => item.id.toString()}
-      contentContainerStyle={styles.container}
+      contentContainerStyle={{ padding: 16 }}
       renderItem={({ item }) => {
         const mainImage = item.images.find(img => img.isMain)?.url;
         const imageUrl = mainImage || "https://via.placeholder.com/100";
 
         return (
-          <TouchableOpacity onPress={() => navigation.navigate("GymDetail", { gym: item })}>
-            <View style={styles.card}>
-              <Image source={{ uri: imageUrl }} style={styles.image} />
-              <View style={styles.info}>
-                <Text style={styles.name}>{item.name}</Text>
-                <Text style={styles.address}>{item.address}</Text>
+          <Card style={{ marginBottom: 16 }} onPress={() => navigation.navigate("GymDetail", { gym: item })}>
+            <View style={{ flexDirection: "row" }}>
+              <Image source={{ uri: imageUrl }} style={{ width: 100, height: 100, borderRadius: 8, marginRight: 16 }} />
+              <View style={{ flex: 1, justifyContent: "center" }}>
+                <Text category="h6">{item.name}</Text>
+                <Text appearance="hint" category="s2">
+                  {item.address}
+                </Text>
               </View>
             </View>
-          </TouchableOpacity>
+          </Card>
         );
       }}
     />
@@ -56,35 +65,3 @@ const GymListComponent = ({ gyms, isLoading }: Props) => {
 };
 
 export default GymListComponent;
-
-const styles = StyleSheet.create({
-  loader: { flex: 1, justifyContent: "center", alignItems: "center" },
-  container: { padding: 16 },
-  card: {
-    flexDirection: "row",
-    backgroundColor: "#fff",
-    marginBottom: 12,
-    borderRadius: 12,
-    overflow: "hidden",
-    elevation: 3,
-  },
-  image: {
-    width: 100,
-    height: 100,
-  },
-  info: {
-    flex: 1,
-    padding: 12,
-    justifyContent: "center",
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 4,
-    color: "#333",
-  },
-  address: {
-    fontSize: 14,
-    color: "#777",
-  },
-});

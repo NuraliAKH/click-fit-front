@@ -1,61 +1,33 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  container: {
+  loader: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
-    alignItems: "center",
     justifyContent: "center",
-    padding: 16,
+    alignItems: "center",
   },
   profileCard: {
-    backgroundColor: "#fff",
-    padding: 24,
-    borderRadius: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 4,
+    flex: 1,
     alignItems: "center",
-    width: "100%",
-    maxWidth: 400,
+    padding: 24,
   },
   avatar: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     marginBottom: 16,
   },
   name: {
-    fontSize: 22,
-    fontWeight: "600",
-    color: "#111827",
     marginBottom: 4,
   },
   email: {
-    fontSize: 14,
-    color: "#6B7280",
-    marginBottom: 2,
+    marginBottom: 4,
   },
   phone: {
-    fontSize: 14,
-    color: "#6B7280",
+    marginBottom: 16,
   },
   editButton: {
-    marginTop: 20,
-    backgroundColor: "#0EA5E9",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "center",
-  },
-  editButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    marginLeft: 8,
-    fontWeight: "500",
+    marginTop: 16,
+    width: "100%",
   },
 });
