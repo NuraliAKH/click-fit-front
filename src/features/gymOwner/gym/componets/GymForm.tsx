@@ -1,7 +1,7 @@
 import React from "react";
-import { TextInput, Button } from "react-native-paper";
-import { View, Text, ScrollView } from "react-native";
-import { useForm, Controller, useWatch } from "react-hook-form";
+import { ScrollView, View, StyleSheet } from "react-native";
+import { Input, Button, Text } from "@ui-kitten/components";
+import { useForm, Controller } from "react-hook-form";
 import { Gym } from "../types/Gym";
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
 const days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
 export const GymForm: React.FC<Props> = ({ onSubmit, defaultValues, isEdit }) => {
-  const { control, handleSubmit, getValues } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       name: defaultValues?.name ?? "",
       address: defaultValues?.address ?? "",
@@ -38,21 +38,22 @@ export const GymForm: React.FC<Props> = ({ onSubmit, defaultValues, isEdit }) =>
   };
 
   const renderWorkingHours = () => (
-    <View style={{ marginTop: 16 }}>
-      <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 8 }}>Часы работы:</Text>
+    <View style={styles.section}>
+      <Text category="label" style={styles.sectionTitle}>
+        Часы работы:
+      </Text>
       {days.map(day => (
         <Controller
           key={day}
           name={`workingHours.${day}`}
           control={control}
           render={({ field: { onChange, value } }) => (
-            <TextInput
+            <Input
               label={day[0].toUpperCase() + day.slice(1)}
+              placeholder="Напр. 06:00-23:00"
               value={value ?? ""}
               onChangeText={onChange}
-              placeholder="Напр. 06:00-23:00"
-              mode="outlined"
-              style={{ marginBottom: 8 }}
+              style={styles.input}
             />
           )}
         />
@@ -61,19 +62,13 @@ export const GymForm: React.FC<Props> = ({ onSubmit, defaultValues, isEdit }) =>
   );
 
   return (
-    <ScrollView style={{ padding: 16 }} keyboardShouldPersistTaps="handled">
+    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
       <Controller
         name="name"
         control={control}
         rules={{ required: "Обязательно" }}
         render={({ field: { onChange, value } }) => (
-          <TextInput
-            label="Название"
-            value={value}
-            onChangeText={onChange}
-            mode="outlined"
-            style={{ marginBottom: 8 }}
-          />
+          <Input label="Название" value={value} onChangeText={onChange} style={styles.input} />
         )}
       />
 
@@ -81,7 +76,7 @@ export const GymForm: React.FC<Props> = ({ onSubmit, defaultValues, isEdit }) =>
         name="address"
         control={control}
         render={({ field: { onChange, value } }) => (
-          <TextInput label="Адрес" value={value} onChangeText={onChange} mode="outlined" style={{ marginBottom: 8 }} />
+          <Input label="Адрес" value={value} onChangeText={onChange} style={styles.input} />
         )}
       />
 
@@ -89,13 +84,7 @@ export const GymForm: React.FC<Props> = ({ onSubmit, defaultValues, isEdit }) =>
         name="phone"
         control={control}
         render={({ field: { onChange, value } }) => (
-          <TextInput
-            label="Телефон"
-            value={value}
-            onChangeText={onChange}
-            mode="outlined"
-            style={{ marginBottom: 8 }}
-          />
+          <Input label="Телефон" value={value} onChangeText={onChange} keyboardType="phone-pad" style={styles.input} />
         )}
       />
 
@@ -103,13 +92,13 @@ export const GymForm: React.FC<Props> = ({ onSubmit, defaultValues, isEdit }) =>
         name="description"
         control={control}
         render={({ field: { onChange, value } }) => (
-          <TextInput
+          <Input
             label="Описание"
             value={value}
             onChangeText={onChange}
             multiline
-            mode="outlined"
-            style={{ marginBottom: 8 }}
+            textStyle={{ minHeight: 64 }}
+            style={styles.input}
           />
         )}
       />
@@ -118,13 +107,12 @@ export const GymForm: React.FC<Props> = ({ onSubmit, defaultValues, isEdit }) =>
         name="latitude"
         control={control}
         render={({ field: { onChange, value } }) => (
-          <TextInput
+          <Input
             label="Широта"
             value={value?.toString() ?? ""}
             keyboardType="numeric"
             onChangeText={val => onChange(parseFloat(val))}
-            mode="outlined"
-            style={{ marginBottom: 8 }}
+            style={styles.input}
           />
         )}
       />
@@ -133,26 +121,39 @@ export const GymForm: React.FC<Props> = ({ onSubmit, defaultValues, isEdit }) =>
         name="longitude"
         control={control}
         render={({ field: { onChange, value } }) => (
-          <TextInput
+          <Input
             label="Долгота"
             value={value?.toString() ?? ""}
             keyboardType="numeric"
             onChangeText={val => onChange(parseFloat(val))}
-            mode="outlined"
-            style={{ marginBottom: 8 }}
+            style={styles.input}
           />
         )}
       />
 
       {renderWorkingHours()}
 
-      <Button
-        mode="contained"
-        onPress={handleSubmit(data => onSubmit(cleanFormData(data)))}
-        style={{ marginTop: 24, marginBottom: 16 }}
-      >
+      <Button onPress={handleSubmit(data => onSubmit(cleanFormData(data)))} style={styles.button}>
         {isEdit ? "Сохранить" : "Создать"}
       </Button>
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+  },
+  input: {
+    marginBottom: 12,
+  },
+  section: {
+    marginTop: 16,
+  },
+  sectionTitle: {
+    marginBottom: 8,
+  },
+  button: {
+    marginTop: 24,
+  },
+});

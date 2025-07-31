@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { View, ScrollView, StyleSheet, Alert } from "react-native";
+import { View, ScrollView, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import { Button, Card, Text, ActivityIndicator, Portal, Modal, IconButton } from "react-native-paper";
+import { Text, Button, Card, Modal } from "@ui-kitten/components";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { useFetchGymById } from "../hooks";
 import { useDeleteService } from "../hooks/service.hook";
 import { ServiceForm } from "../componets/ServiceForm";
@@ -9,13 +10,9 @@ import { ServiceForm } from "../componets/ServiceForm";
 export const GymDetailedPage: React.FC = () => {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
-
   const { gymId } = route.params;
-  if (!gymId) {
-    return <Text>Не указан ID спортзала</Text>;
-  }
-  const { data: gym, isLoading, refetch } = useFetchGymById(+gymId);
 
+  const { data: gym, isLoading, refetch } = useFetchGymById(+gymId);
   const deleteService = useDeleteService();
 
   const [selectedService, setSelectedService] = useState<any>(null);
@@ -36,58 +33,66 @@ export const GymDetailedPage: React.FC = () => {
     ]);
   };
 
-  if (isLoading) return <ActivityIndicator style={{ marginTop: 40 }} />;
+  if (!gymId) return <Text category="h6">Не указан ID зала</Text>;
+  if (isLoading) return <Text>Загрузка...</Text>;
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Card style={styles.card}>
-        <Card.Title title={gym?.name} subtitle={gym?.address || "Без адреса"} />
-        <Card.Content>
-          <Text style={styles.description}>📞 Телефон: {gym?.phone || "Не указан"}</Text>
-          <Text style={styles.description}>🕒 Время работы: {JSON.stringify(gym?.workingHours, null, 2)}</Text>
+        <Text category="h5">{gym?.name}</Text>
+        <Text appearance="hint">{gym?.address || "Без адреса"}</Text>
+        <Text style={styles.info}>📞 {gym?.phone || "Телефон не указан"}</Text>
+        <Text style={styles.info}>🕒 {JSON.stringify(gym?.workingHours)}</Text>
 
-          <Button mode="contained" onPress={() => navigation.navigate("EditGymPage", { gymId })} style={styles.button}>
-            ✏️ Редактировать зал
-          </Button>
+        <Button style={styles.button} onPress={() => navigation.navigate("EditGymPage", { gymId })}>
+          ✏️ Редактировать зал
+        </Button>
 
-          <Button
-            mode="outlined"
-            onPress={() => navigation.navigate("CreateStaffPage", { gymId })}
-            style={styles.button}
-          >
-            ➕ Добавить сотрудника
-          </Button>
-        </Card.Content>
+        <Button
+          appearance="outline"
+          style={styles.button}
+          onPress={() => navigation.navigate("CreateStaffPage", { gymId })}
+        >
+          ➕ Добавить сотрудника
+        </Button>
       </Card>
 
-      <View style={styles.serviceHeader}>
-        <IconButton icon="plus" onPress={() => setCreateVisible(true)} />
+      <View style={styles.header}>
+        <Text category="h6">Услуги</Text>
+        <TouchableOpacity onPress={() => setCreateVisible(true)}>
+          <Ionicons name="add-circle-outline" size={28} color="#3366FF" />
+        </TouchableOpacity>
       </View>
 
-      {(gym?.services || []).map(service => (
+      {gym?.services?.map(service => (
         <Card key={service.id} style={styles.serviceCard}>
-          <Card.Title
-            title={service.name}
-            subtitle={`💸 ${service.price / 100} сум | 🕒 ${service.durationMinutes} мин.`}
-            right={() => (
-              <View style={{ flexDirection: "row" }}>
-                <IconButton
-                  icon="pencil"
-                  onPress={() => {
-                    setSelectedService(service);
-                    setEditVisible(true);
-                  }}
-                />
-                <IconButton icon="delete" onPress={() => handleDelete(service.id)} />
-              </View>
-            )}
-          />
+          <View style={styles.serviceRow}>
+            <View style={{ flex: 1 }}>
+              <Text category="s1">{service.name}</Text>
+              <Text appearance="hint">
+                💸 {service.price / 100} сум | 🕒 {service.durationMinutes} мин.
+              </Text>
+            </View>
+            <View style={styles.iconRow}>
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedService(service);
+                  setEditVisible(true);
+                }}
+              >
+                <Ionicons name="pencil" size={22} color="#3366FF" style={styles.icon} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleDelete(service.id)}>
+                <Ionicons name="trash" size={22} color="#FF3D71" style={styles.icon} />
+              </TouchableOpacity>
+            </View>
+          </View>
         </Card>
       ))}
 
-      {/* ===== Create Modal ===== */}
-      <Portal>
-        <Modal visible={isCreateVisible} onDismiss={() => setCreateVisible(false)} contentContainerStyle={styles.modal}>
+      {/* Создание услуги */}
+      <Modal visible={isCreateVisible} backdropStyle={styles.backdrop} onBackdropPress={() => setCreateVisible(false)}>
+        <View style={styles.modal}>
           <ServiceForm
             gymId={gymId}
             onSuccess={() => {
@@ -95,12 +100,12 @@ export const GymDetailedPage: React.FC = () => {
               setCreateVisible(false);
             }}
           />
-        </Modal>
-      </Portal>
+        </View>
+      </Modal>
 
-      {/* ===== Edit Modal ===== */}
-      <Portal>
-        <Modal visible={isEditVisible} onDismiss={() => setEditVisible(false)} contentContainerStyle={styles.modal}>
+      {/* Редактирование услуги */}
+      <Modal visible={isEditVisible} backdropStyle={styles.backdrop} onBackdropPress={() => setEditVisible(false)}>
+        <View style={styles.modal}>
           <ServiceForm
             gymId={gymId}
             initialValues={selectedService}
@@ -110,8 +115,8 @@ export const GymDetailedPage: React.FC = () => {
               setSelectedService(null);
             }}
           />
-        </Modal>
-      </Portal>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -122,31 +127,42 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 20,
+    padding: 16,
   },
-  description: {
-    marginBottom: 8,
-    color: "#555",
+  info: {
+    marginTop: 6,
   },
   button: {
-    marginTop: 10,
+    marginTop: 12,
   },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  serviceCard: {
-    marginBottom: 10,
-  },
-  modal: {
-    backgroundColor: "white",
-    padding: 20,
-    margin: 16,
-    borderRadius: 12,
-  },
-  serviceHeader: {
+  header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginVertical: 16,
+  },
+  serviceCard: {
+    marginBottom: 12,
+  },
+  serviceRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  iconRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  icon: {
+    marginLeft: 12,
+  },
+  modal: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 12,
+    margin: 16,
+  },
+  backdrop: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
 });
