@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useController, Control } from "react-hook-form";
-import { TextInput } from "react-native-paper";
+import { Input, Text } from "@ui-kitten/components";
 
 const days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
@@ -23,17 +23,32 @@ export const GymWorkingHoursField: React.FC<Props> = ({ control, name }) => {
   };
 
   return (
-    <View style={{ gap: 8 }}>
-      <Text style={{ fontWeight: "bold", fontSize: 16 }}>Часы работы:</Text>
+    <View style={styles.container}>
+      <Text category="label" style={styles.label}>
+        Часы работы:
+      </Text>
       {days.map(day => (
-        <TextInput
+        <Input
           key={day}
           label={day[0].toUpperCase() + day.slice(1)}
           value={value?.[day] ?? ""}
           onChangeText={text => updateDay(day, text)}
-          mode="outlined"
+          placeholder="Напр. 06:00-23:00"
+          style={styles.input}
         />
       ))}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 16,
+  },
+  label: {
+    marginBottom: 8,
+  },
+  input: {
+    marginBottom: 12,
+  },
+});

@@ -1,15 +1,18 @@
 import React from "react";
-import { View } from "react-native";
+import { ScrollView } from "react-native";
+import { Layout } from "@ui-kitten/components";
 import { useUserProfile } from "../hooks/useUserProfile";
-import { styles } from "../styles/profileStyles";
 import ProfileComponent from "../components/ProfileComponent";
 
 const ProfilePage = () => {
   const { data, isLoading } = useUserProfile();
+
   return (
-    <View style={styles.container}>
-      <ProfileComponent user={data?.data} loading={isLoading} />
-    </View>
+    <Layout style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32 }}>
+        <ProfileComponent user={data?.data} loading={isLoading} />
+      </ScrollView>
+    </Layout>
   );
 };
 

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
-import { Text, Avatar, Searchbar, ActivityIndicator, Divider, Card } from "react-native-paper";
+import { Avatar, Input, Card, Text, Divider } from "@ui-kitten/components";
 import { useFetchAllUser } from "../hooks";
+import Icon from "react-native-vector-icons/Feather";
 
 export const UsersListPage = () => {
   const { data, isLoading, isError } = useFetchAllUser();
@@ -11,10 +12,10 @@ export const UsersListPage = () => {
     `${user.firstName} ${user.lastName ?? ""} ${user.email}`.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  if (isLoading) {
+  if (isLoading || !data) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" />
+        <Text category="h6">Загрузка...</Text>
       </View>
     );
   }
@@ -22,42 +23,53 @@ export const UsersListPage = () => {
   if (isError) {
     return (
       <View style={styles.centered}>
-        <Text>Ошибка при загрузке пользователей</Text>
+        <Text status="danger">Ошибка при загрузке пользователей</Text>
       </View>
     );
   }
 
+  const renderItem = ({ item }: any) => (
+    <Card style={styles.card} disabled>
+      <View style={styles.userRow}>
+        <View
+          style={[
+            styles.avatar,
+            { width: 48, height: 48, borderRadius: 24, justifyContent: "center", alignItems: "center" },
+          ]}
+        >
+          <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 18 }}>
+            {`${item.firstName?.[0] ?? ""}${item.lastName?.[0] ?? ""}`}
+          </Text>
+        </View>
+        <View style={styles.userInfo}>
+          <Text style={styles.name}>
+            {item.firstName} {item.lastName ?? ""}
+          </Text>
+          <Text appearance="hint" style={styles.email}>
+            {item.email}
+          </Text>
+          <Text appearance="hint" style={styles.role}>
+            {item.role}
+          </Text>
+        </View>
+      </View>
+    </Card>
+  );
+
   return (
     <View style={styles.container}>
-      <Searchbar
+      <Input
         placeholder="Поиск по имени, фамилии или email"
-        onChangeText={setSearchText}
         value={searchText}
+        onChangeText={setSearchText}
+        accessoryLeft={<Icon name="search" size={18} color="#999" />}
         style={styles.searchbar}
       />
-
       <FlatList
         data={filteredUsers}
         keyExtractor={item => item.id.toString()}
         ItemSeparatorComponent={() => <Divider style={styles.divider} />}
-        renderItem={({ item }) => (
-          <Card style={styles.card} mode="contained">
-            <View style={styles.userRow}>
-              <Avatar.Text
-                size={48}
-                label={`${item.firstName?.[0] ?? ""}${item.lastName?.[0] ?? ""}`}
-                style={styles.avatar}
-              />
-              <View style={styles.userInfo}>
-                <Text style={styles.name}>
-                  {item.firstName} {item.lastName ?? ""}
-                </Text>
-                <Text style={styles.email}>{item.email}</Text>
-                <Text style={styles.role}>{item.role}</Text>
-              </View>
-            </View>
-          </Card>
-        )}
+        renderItem={renderItem}
         contentContainerStyle={styles.list}
       />
     </View>
@@ -72,7 +84,6 @@ const styles = StyleSheet.create({
   searchbar: {
     margin: 16,
     borderRadius: 16,
-    elevation: 2,
   },
   list: {
     paddingBottom: 24,
@@ -86,6 +97,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 12,
     backgroundColor: "#ffffff",
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
     elevation: 2,
   },
   userRow: {
@@ -93,8 +108,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   avatar: {
-    backgroundColor: "#2ecc71",
     marginRight: 16,
+    backgroundColor: "#2ecc71",
   },
   userInfo: {
     flex: 1,
@@ -106,12 +121,10 @@ const styles = StyleSheet.create({
   },
   email: {
     fontSize: 14,
-    color: "#555",
     marginTop: 2,
   },
   role: {
     fontSize: 12,
-    color: "#999",
     marginTop: 2,
   },
   centered: {

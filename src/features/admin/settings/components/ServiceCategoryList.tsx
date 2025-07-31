@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
-import { Text, List, IconButton, Divider, Button, Avatar } from "react-native-paper";
+import { Layout, Text, Button, Icon, Avatar, useTheme, Divider } from "@ui-kitten/components";
+import IconFA from "react-native-vector-icons/MaterialCommunityIcons";
 import { useFetchAllServiceCategory, useDeleteServiceCategory } from "../hooks/serviceCategoryHooks";
 import { CreateServiceCategoryModal } from "./CreateServiceCategoryModal";
 
@@ -8,46 +9,67 @@ export const ServiceCategoryList = () => {
   const { data, isLoading, isError } = useFetchAllServiceCategory();
   const { mutate: deleteCategory } = useDeleteServiceCategory();
   const [modalVisible, setModalVisible] = useState(false);
+  const theme = useTheme();
 
   if (isLoading) {
     return (
-      <View style={styles.centered}>
+      <Layout style={styles.centered}>
         <Text>Загрузка...</Text>
-      </View>
+      </Layout>
     );
   }
 
   if (isError) {
     return (
-      <View style={styles.centered}>
-        <Text>Ошибка при загрузке категорий</Text>
-      </View>
+      <Layout style={styles.centered}>
+        <Text status="danger">Ошибка при загрузке категорий</Text>
+      </Layout>
     );
   }
 
   return (
     <View style={{ flex: 1 }}>
-      <Button mode="contained" onPress={() => setModalVisible(true)} style={styles.createButton}>
+      <Button onPress={() => setModalVisible(true)} style={styles.createButton}>
         Создать категорию
       </Button>
+
       <FlatList
         data={data?.data || []}
         keyExtractor={item => item.id.toString()}
         contentContainerStyle={styles.list}
         renderItem={({ item }) => (
-          <View style={styles.itemContainer}>
-            <List.Item
-              title={`${item.name} (${item.type})`}
-              description={item.icon}
-              left={() => <Avatar.Icon icon={item.icon} style={{ backgroundColor: item.color || "#ccc" }} />}
-              right={() => (
-                <IconButton icon="delete-outline" onPress={() => deleteCategory(item.id)} iconColor="#e74c3c" />
-              )}
-            />
-            <Divider />
-          </View>
+          <Layout style={styles.itemContainer} level="2">
+            <View style={styles.itemRow}>
+              <View
+                style={{
+                  backgroundColor: item.color || "#999",
+                  borderRadius: 24,
+                  width: 48,
+                  height: 48,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <IconFA name={item.icon} size={24} color="#fff" />
+              </View>
+              <View style={styles.itemText}>
+                <Text category="s1">{`${item.name} (${item.type})`}</Text>
+                <Text category="c1" appearance="hint">
+                  {item.icon}
+                </Text>
+              </View>
+              <IconFA
+                name="trash-can-outline"
+                size={24}
+                color={theme["color-danger-500"]}
+                onPress={() => deleteCategory(item.id)}
+              />
+            </View>
+            <Divider style={{ marginTop: 8 }} />
+          </Layout>
         )}
       />
+
       <CreateServiceCategoryModal visible={modalVisible} onDismiss={() => setModalVisible(false)} />
     </View>
   );
@@ -56,13 +78,19 @@ export const ServiceCategoryList = () => {
 const styles = StyleSheet.create({
   list: {
     padding: 16,
-    backgroundColor: "#fff",
   },
   itemContainer: {
     marginBottom: 12,
-    backgroundColor: "#f9f9f9",
+    padding: 12,
     borderRadius: 12,
-    overflow: "hidden",
+  },
+  itemRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  itemText: {
+    flex: 1,
+    marginLeft: 12,
   },
   centered: {
     flex: 1,

@@ -1,39 +1,48 @@
 import React from "react";
-import { View, Text, Image, ActivityIndicator, TouchableOpacity } from "react-native";
+import { Image } from "react-native";
+import { Layout, Text, Spinner, Button, Icon } from "@ui-kitten/components";
 import { styles } from "../styles/profileStyles";
-import Icon from "react-native-vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { UserLayoutStackParamList } from "../../../../types/RootStackParamList";
-
+import FeatherIcon from "react-native-vector-icons/Feather";
 interface Props {
   user: any;
   loading: boolean;
-  onEdit?: () => void;
 }
 
-const ProfileComponent = ({ user, loading, onEdit }: Props) => {
+const ProfileComponent = ({ user, loading }: Props) => {
   const navigation = useNavigation<NativeStackNavigationProp<UserLayoutStackParamList>>();
+
   if (loading) {
-    return <ActivityIndicator style={{ marginTop: 100 }} size="large" color="#0EA5E9" />;
+    return (
+      <Layout style={styles.loader}>
+        <Spinner size="giant" />
+      </Layout>
+    );
   }
 
   return (
-    <View style={styles.profileCard}>
+    <Layout style={styles.profileCard}>
       <Image source={{ uri: user?.avatarUrl || "https://ui-avatars.com/api/?name=User" }} style={styles.avatar} />
-      <Text style={styles.name}>
+      <Text category="h6" style={styles.name}>
         {user?.firstName || "Имя"} {user?.lastName || "Фамилия"}
       </Text>
-      <Text style={styles.email}>{user?.email}</Text>
-      <Text style={styles.phone}>{user?.phone}</Text>
+      <Text appearance="hint" style={styles.email}>
+        {user?.email}
+      </Text>
+      <Text appearance="hint" style={styles.phone}>
+        {user?.phone}
+      </Text>
 
-      <TouchableOpacity onPress={onEdit} style={styles.editButton}>
-        <Icon name="edit" size={18} color="#fff" />
-        <Text style={styles.editButtonText} onPress={() => navigation.navigate("EditProfile")}>
-          Изменить
-        </Text>
-      </TouchableOpacity>
-    </View>
+      <Button
+        accessoryLeft={() => <FeatherIcon name="edit" size={20} color="#fff" />}
+        style={styles.editButton}
+        onPress={() => navigation.navigate("EditProfile")}
+      >
+        Изменить
+      </Button>
+    </Layout>
   );
 };
 

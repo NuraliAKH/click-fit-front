@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
-import { Text, TextInput, List, IconButton, Button, Menu } from "react-native-paper";
+import { Layout, Text, Input, ListItem, Icon, MenuItem, OverflowMenu, Button, useTheme } from "@ui-kitten/components";
+import IconFA from "react-native-vector-icons/MaterialCommunityIcons";
 import { useFetchAllUser } from "../../users/hooks";
 import { useGiveRole } from "../hooks/roleHook";
 import { Role } from "../../../../types/Roles";
@@ -10,7 +11,6 @@ export const AssignRolePage = () => {
   const { mutate: updateUserRole } = useGiveRole();
 
   const [search, setSearch] = useState("");
-  const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
@@ -20,20 +20,24 @@ export const AssignRolePage = () => {
       [user.firstName, user.lastName, user.phone].join(" ").toLowerCase().includes(search.toLowerCase())
     );
   }, [search, userData]);
+
   const handleAssignRole = (userId: number, role: string) => {
     updateUserRole({ userId: +userId, role });
   };
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Назначение ролей</Text>
+  const renderIcon = () => <IconFA name="account-cog" size={24} color="#8F9BB3" />;
 
-      <TextInput
-        label="Поиск (имя, фамилия, телефон)"
+  return (
+    <Layout style={styles.container}>
+      <Text category="h5" style={styles.title}>
+        Назначение ролей
+      </Text>
+
+      <Input
+        placeholder="Поиск (имя, фамилия, телефон)"
         value={search}
         onChangeText={setSearch}
         style={styles.searchInput}
-        mode="outlined"
       />
 
       <FlatList
@@ -41,57 +45,54 @@ export const AssignRolePage = () => {
         keyExtractor={item => item.id.toString()}
         contentContainerStyle={styles.list}
         renderItem={({ item }) => (
-          <View style={styles.userItem}>
-            <List.Item
+          <Layout style={styles.userItem} level="2">
+            <ListItem
               title={`${item.firstName} ${item.lastName}`}
               description={`Телефон: ${item.phone}  |  Роль: ${item.role}`}
-              right={() => (
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Menu
-                    visible={menuVisible && selectedUserId === item.id}
-                    onDismiss={() => {
-                      setMenuVisible(false);
-                      setSelectedUserId(null);
-                    }}
-                    anchor={
-                      <IconButton
-                        icon="account-cog"
-                        onPress={() => {
-                          setMenuVisible(true);
-                          setSelectedUserId(item.id);
-                        }}
-                      />
-                    }
-                  >
-                    {Object.values(Role).map(role => (
-                      <Menu.Item
-                        key={role}
-                        onPress={() => {
-                          handleAssignRole(item.id, role);
-                          setMenuVisible(false);
-                        }}
-                        title={role}
-                      />
-                    ))}
-                  </Menu>
-                </View>
+              accessoryRight={() => (
+                <OverflowMenu
+                  anchor={() => (
+                    <Button
+                      appearance="ghost"
+                      accessoryLeft={renderIcon}
+                      onPress={() => {
+                        setMenuVisible(true);
+                        setSelectedUserId(item.id);
+                      }}
+                    />
+                  )}
+                  visible={menuVisible && selectedUserId === item.id}
+                  onBackdropPress={() => {
+                    setMenuVisible(false);
+                    setSelectedUserId(null);
+                  }}
+                >
+                  {Object.values(Role).map(role => (
+                    <MenuItem
+                      key={role}
+                      title={role}
+                      onPress={() => {
+                        handleAssignRole(item.id, role);
+                        setMenuVisible(false);
+                      }}
+                    />
+                  ))}
+                </OverflowMenu>
               )}
             />
-          </View>
+          </Layout>
         )}
       />
-    </View>
+    </Layout>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
     flex: 1,
-    backgroundColor: "#fff",
+    padding: 16,
   },
   title: {
-    fontSize: 22,
     marginBottom: 12,
     fontWeight: "bold",
   },
@@ -99,9 +100,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   userItem: {
-    backgroundColor: "#f7f7f7",
-    borderRadius: 12,
-    marginBottom: 10,
+    marginBottom: 12,
+    borderRadius: 8,
     overflow: "hidden",
   },
   list: {

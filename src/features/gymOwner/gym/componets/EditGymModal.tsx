@@ -1,5 +1,6 @@
 import React from "react";
-import { Modal, Portal } from "react-native-paper";
+import { Dimensions, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
+import { Modal, Layout } from "@ui-kitten/components";
 import { GymForm } from "./GymForm";
 import { CreateGym } from "../types/Gym";
 import { useUpdateGym } from "../hooks";
@@ -15,23 +16,44 @@ export const EditGymModal: React.FC<Props> = ({ visible, onDismiss, onUpdate, gy
   const { mutate: updateGym } = useUpdateGym(gym.id);
 
   return (
-    <Portal>
-      <Modal
-        visible={visible}
-        onDismiss={onDismiss}
-        contentContainerStyle={{ padding: 20, backgroundColor: "white", margin: 16, borderRadius: 8 }}
-      >
-        {gym && (
-          <GymForm
-            onSubmit={data => {
-              updateGym(data);
-              onUpdate(data);
-            }}
-            defaultValues={gym}
-            isEdit
-          />
-        )}
-      </Modal>
-    </Portal>
+    <Modal visible={visible} backdropStyle={styles.backdrop} onBackdropPress={onDismiss}>
+      <KeyboardAvoidingView keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0} style={styles.keyboardContainer}>
+        <Layout style={styles.container} level="1">
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            {gym && (
+              <GymForm
+                onSubmit={data => {
+                  updateGym(data);
+                  onUpdate(data);
+                }}
+                defaultValues={gym}
+                isEdit
+              />
+            )}
+          </ScrollView>
+        </Layout>
+      </KeyboardAvoidingView>
+    </Modal>
   );
 };
+
+const screenHeight = Dimensions.get("window").height;
+
+const styles = StyleSheet.create({
+  backdrop: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  container: {
+    borderRadius: 8,
+    width: "150%",
+    maxHeight: screenHeight * 0.8,
+  },
+  keyboardContainer: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  scrollContent: {
+    paddingBottom: 100,
+  },
+});

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { FlatList, View, StyleSheet, Alert } from "react-native";
-import { Text, Button, Card, IconButton, Modal, Portal, TextInput } from "react-native-paper";
+import { View, StyleSheet, FlatList, Alert, KeyboardAvoidingView, Platform } from "react-native";
+import { Input, Button, Card, Icon, Modal, Text, useTheme } from "@ui-kitten/components";
+import IconFA from "react-native-vector-icons/FontAwesome";
 import { useCreateAmenity, useDeleteAmenity, useFetchAllAmenity } from "../hooks/amenityHooks";
 
 export const AmenityList = () => {
@@ -11,6 +12,7 @@ export const AmenityList = () => {
   const { data: amenities, isLoading } = useFetchAllAmenity();
   const createAmenity = useCreateAmenity();
   const deleteAmenity = useDeleteAmenity();
+  const theme = useTheme();
 
   const handleDelete = (id: number) => {
     Alert.alert("Удалить удобство?", "Вы уверены?", [
@@ -26,11 +28,7 @@ export const AmenityList = () => {
   const handleCreate = () => {
     if (name.trim() && key.trim() && icon.trim()) {
       createAmenity.mutate(
-        {
-          name: name.trim(),
-          key: key.trim(),
-          icon: icon.trim(),
-        },
+        { name: name.trim(), key: key.trim(), icon: icon.trim() },
         {
           onSuccess: () => {
             setName("");
@@ -45,49 +43,58 @@ export const AmenityList = () => {
     }
   };
 
+  const renderItem = ({ item }: any) => (
+    <Card style={styles.card}>
+      <View style={styles.cardContent}>
+        <IconFA name={item.icon} size={20} color={theme["text-basic-color"]} />
+        <Text style={styles.cardText}>{item.name}</Text>
+        <IconFA name="trash" size={20} color="red" onPress={() => handleDelete(item.id)} />
+      </View>
+    </Card>
+  );
+
   return (
-    <View style={styles.container}>
-      <Button mode="contained" onPress={() => setVisible(true)} style={styles.addButton}>
-        Добавить удобство
-      </Button>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Button onPress={() => setVisible(true)} style={styles.addButton}>
+          Добавить удобство
+        </Button>
 
-      {isLoading ? (
-        <Text>Загрузка...</Text>
-      ) : (
-        <FlatList
-          data={amenities?.data}
-          keyExtractor={item => item.id.toString()}
-          renderItem={({ item }) => (
-            <Card style={styles.card}>
-              <Card.Title
-                title={`${item.icon} ${item.name}`}
-                right={() => <IconButton icon="delete-outline" onPress={() => handleDelete(item.id)} />}
-              />
-            </Card>
-          )}
-        />
-      )}
+        {isLoading ? (
+          <Text>Загрузка...</Text>
+        ) : (
+          <FlatList data={amenities?.data} keyExtractor={item => item.id.toString()} renderItem={renderItem} />
+        )}
 
-      <Portal>
-        <Modal visible={visible} onDismiss={() => setVisible(false)} contentContainerStyle={styles.modal}>
-          <Text variant="titleMedium">Новое удобство</Text>
-          <TextInput label="Название" value={name} onChangeText={setName} style={{ marginTop: 12 }} />
-          <TextInput label="Ключ (key)" value={key} onChangeText={setKey} style={{ marginTop: 12 }} />
-          <TextInput label="Иконка (icon)" value={icon} onChangeText={setIcon} style={{ marginTop: 12 }} />
-          <Button mode="contained" onPress={handleCreate} style={{ marginTop: 16 }}>
-            Сохранить
-          </Button>
+        <Modal visible={visible} backdropStyle={styles.backdrop} onBackdropPress={() => setVisible(false)}>
+          <Card disabled={true} style={styles.modal}>
+            <Text category="h6" style={{ marginBottom: 12 }}>
+              Новое удобство
+            </Text>
+
+            <Input placeholder="Название" value={name} onChangeText={setName} style={styles.input} />
+            <Input placeholder="Ключ (key)" value={key} onChangeText={setKey} style={styles.input} />
+            <Input
+              placeholder="Иконка (например: wifi, bath, etc)"
+              value={icon}
+              onChangeText={setIcon}
+              style={styles.input}
+            />
+
+            <Button onPress={handleCreate} style={{ marginTop: 16 }}>
+              Сохранить
+            </Button>
+          </Card>
         </Modal>
-      </Portal>
-    </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    padding: 16,
     flex: 1,
+    padding: 16,
   },
   addButton: {
     marginBottom: 16,
@@ -95,10 +102,25 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: 12,
   },
+  cardContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  cardText: {
+    flex: 1,
+    marginHorizontal: 12,
+  },
   modal: {
-    backgroundColor: "white",
     padding: 20,
-    margin: 20,
-    borderRadius: 8,
+    borderRadius: 12,
+    width: 320,
+    alignSelf: "center",
+  },
+  input: {
+    marginVertical: 8,
+  },
+  backdrop: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
 });
