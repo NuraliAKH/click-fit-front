@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
-import { Modal, Layout, Text, Input, Button, Toggle, useTheme } from "@ui-kitten/components";
-import { Datepicker } from "@ui-kitten/components";
+import { View, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { Modal, Layout, Text, Input, Button, Toggle } from "@ui-kitten/components";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useCreatePromoCode } from "../hooks/promoCodeHooks";
 import { PromoCodeType } from "../types/PromoCodeType";
 
@@ -11,7 +11,6 @@ interface Props {
 }
 
 export const CreatePromoCodeModal: React.FC<Props> = ({ visible, onDismiss }) => {
-  const theme = useTheme();
   const [code, setCode] = useState("");
   const [type, setType] = useState<PromoCodeType>(PromoCodeType.PERCENTAGE);
   const [value, setValue] = useState("");
@@ -19,9 +18,12 @@ export const CreatePromoCodeModal: React.FC<Props> = ({ visible, onDismiss }) =>
   const [minAmount, setMinAmount] = useState("");
   const [maxDiscount, setMaxDiscount] = useState("");
   const [usageLimit, setUsageLimit] = useState("");
-  const [validFrom, setValidFrom] = useState<Date | undefined>(new Date());
-  const [validTo, setValidTo] = useState<Date | undefined>(new Date());
+  const [validFrom, setValidFrom] = useState<Date>(new Date());
+  const [validTo, setValidTo] = useState<Date>(new Date());
   const [isActive, setIsActive] = useState(true);
+
+  const [showFromPicker, setShowFromPicker] = useState(false);
+  const [showToPicker, setShowToPicker] = useState(false);
 
   const { mutate, isPending } = useCreatePromoCode();
 
@@ -34,8 +36,8 @@ export const CreatePromoCodeModal: React.FC<Props> = ({ visible, onDismiss }) =>
       minAmount: minAmount ? Number(minAmount) : null,
       maxDiscount: maxDiscount ? Number(maxDiscount) : null,
       usageLimit: usageLimit ? Number(usageLimit) : null,
-      validFrom: validFrom!,
-      validTo: validTo!,
+      validFrom,
+      validTo,
       isActive,
     });
     onDismiss();
@@ -58,10 +60,11 @@ export const CreatePromoCodeModal: React.FC<Props> = ({ visible, onDismiss }) =>
   return (
     <Modal visible={visible} backdropStyle={styles.backdrop} onBackdropPress={onDismiss}>
       <Layout style={styles.container} level="1">
-        <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text category="h6" style={styles.title}>
             Создать промокод
           </Text>
+
           <Input label="Код" value={code} onChangeText={setCode} style={styles.input} />
           <Input
             label="Тип (PERCENTAGE | FIXED | FREE_SERVICE)"
@@ -94,13 +97,41 @@ export const CreatePromoCodeModal: React.FC<Props> = ({ visible, onDismiss }) =>
           />
 
           <View style={styles.row}>
-            <Datepicker date={validFrom} onSelect={setValidFrom} style={styles.date} placeholder="Срок от" />
-            <Datepicker date={validTo} onSelect={setValidTo} style={styles.date} placeholder="до" />
+            <TouchableOpacity style={styles.dateButton} onPress={() => setShowFromPicker(true)}>
+              <Text appearance="hint">Срок от</Text>
+              <Text>{validFrom.toLocaleDateString()}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.dateButton} onPress={() => setShowToPicker(true)}>
+              <Text appearance="hint">до</Text>
+              <Text>{validTo.toLocaleDateString()}</Text>
+            </TouchableOpacity>
           </View>
+
+          <DateTimePickerModal
+            isVisible={showFromPicker}
+            mode="date"
+            date={validFrom}
+            onConfirm={date => {
+              setValidFrom(date);
+              setShowFromPicker(false);
+            }}
+            onCancel={() => setShowFromPicker(false)}
+          />
+
+          <DateTimePickerModal
+            isVisible={showToPicker}
+            mode="date"
+            date={validTo}
+            onConfirm={date => {
+              setValidTo(date);
+              setShowToPicker(false);
+            }}
+            onCancel={() => setShowToPicker(false)}
+          />
 
           <View style={styles.row}>
             <Text>Активен</Text>
-            <Toggle checked={isActive} onChange={checked => setIsActive(checked)} />
+            <Toggle checked={isActive} onChange={setIsActive} />
           </View>
 
           <Button onPress={handleSubmit} disabled={isPending} style={styles.button}>
@@ -121,6 +152,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: "100%",
     maxHeight: "90%",
+  },
+  scrollContainer: {
     paddingBottom: 100,
   },
   title: {
@@ -134,11 +167,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    gap: 12,
     marginBottom: 16,
   },
-  date: {
+  dateButton: {
     flex: 1,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    marginHorizontal: 4,
   },
   button: {
     marginTop: 12,
