@@ -1,65 +1,49 @@
 import React from "react";
 import { View, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
-import { Button, Text, TextInput, useTheme, HelperText } from "react-native-paper";
+import { Text, TextInput, Button, useTheme, HelperText } from "react-native-paper";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Toast from "react-native-toast-message";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../../types/RootStackParamList";
 
-const loginSchema = z.object({
+const registerSchema = z.object({
   email: z.string().email("Invalid email"),
+  phone: z.string().min(7, "Phone is required"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-type LoginForm = z.infer<typeof loginSchema>;
+type RegisterForm = z.infer<typeof registerSchema>;
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const { colors } = useTheme();
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<RegisterForm>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       email: "",
+      phone: "",
       password: "",
     },
   });
 
-  const onSubmit = async (data: LoginForm) => {
+  const onSubmit = async (data: RegisterForm) => {
     try {
-      const response = await axios.post("http://192.168.1.177:3000/api/auth/signin", data);
-
-      const token = response.data?.access_token;
-
-      if (!token) {
-        Toast.show({ type: "error", text1: "Login failed", text2: "Token not found in response" });
-        return;
-      }
-
-      await AsyncStorage.setItem("token", token);
-      Toast.show({ type: "success", text1: "Login successful" });
-
-      setTimeout(() => {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "UserLayout" as never }],
-        });
-      }, 200);
+      await axios.post("http://192.168.1.177:3000/api/auth/signup", data);
+      Toast.show({ type: "success", text1: "Registered successfully" });
+      navigation.navigate("Login");
     } catch (error: any) {
-      console.error("Login error:", error);
       Toast.show({
         type: "error",
-        text1: "Login failed",
-        text2: error.response?.data?.message || "Check your credentials or try again later",
+        text1: "Registration failed",
+        text2: error.response?.data?.message || "Try again later",
       });
     }
   };
@@ -67,8 +51,8 @@ const LoginPage = () => {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.container}>
       <View style={styles.inner}>
-        <Text style={[styles.title, { color: colors.primary }]}>Welcome Back 👋</Text>
-        <Text style={styles.subtitle}>Login to your account</Text>
+        <Text style={[styles.title, { color: colors.primary }]}>Register 📝</Text>
+        <Text style={styles.subtitle}>Create a new account</Text>
         <View style={styles.form}>
           <Controller
             name="email"
@@ -88,6 +72,25 @@ const LoginPage = () => {
               </>
             )}
           />
+
+          <Controller
+            name="phone"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <>
+                <TextInput
+                  label="Phone"
+                  value={value}
+                  onChangeText={onChange}
+                  mode="outlined"
+                  keyboardType="phone-pad"
+                  style={styles.input}
+                />
+                {errors.phone && <HelperText type="error">{errors.phone.message}</HelperText>}
+              </>
+            )}
+          />
+
           <Controller
             name="password"
             control={control}
@@ -105,14 +108,16 @@ const LoginPage = () => {
               </>
             )}
           />
+
           <Button mode="contained" onPress={handleSubmit(onSubmit)} loading={isSubmitting} style={styles.button}>
-            Login
+            Register
+          </Button>
+
+          <Button mode="text" onPress={() => navigation.navigate("Login")} style={{ marginTop: 8 }}>
+            Already have an account? Login
           </Button>
         </View>
       </View>
-      <Button mode="text" onPress={() => navigation.navigate("Register" as never)} style={{ marginTop: 12 }}>
-        Don’t have an account? Register
-      </Button>
     </KeyboardAvoidingView>
   );
 };
@@ -151,4 +156,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginPage;
+export default RegisterPage;
