@@ -10,6 +10,7 @@ import EditProfilePage from "../features/user/profile/pages/EditProfilePage";
 import GymsPage from "../features/user/gyms/pages/GymPage";
 import GymDetailPage from "../features/user/gyms/components/GymDetailPage";
 import BookingListPage from "../features/user/bookings/pages/BookingListPage";
+import FavouritesPage from "../features/user/gyms/pages/FavouritesPage";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -67,6 +68,7 @@ const UserLayout = () => {
           <Stack.Screen name="Tabs" component={TabNavigator} />
           <Stack.Screen name="EditProfile" component={EditProfilePage} />
           <Stack.Screen name="GymDetail" component={GymDetailPage} />
+          <Stack.Screen name="FavouritesPage" component={FavouritesPage} />
         </Stack.Navigator>
       </SafeAreaProvider>
     </PaperProvider>
