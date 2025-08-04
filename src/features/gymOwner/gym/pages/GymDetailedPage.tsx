@@ -6,6 +6,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useFetchGymById } from "../hooks";
 import { useDeleteService } from "../hooks/service.hook";
 import { ServiceForm } from "../componets/ServiceForm";
+import { GymAmenityManager } from "../componets/GymAmenityCRUD";
 
 export const GymDetailedPage: React.FC = () => {
   const route = useRoute<any>();
@@ -56,6 +57,7 @@ export const GymDetailedPage: React.FC = () => {
           ➕ Добавить сотрудника
         </Button>
       </Card>
+      <GymAmenityManager gymId={gymId} />
 
       <View style={styles.header}>
         <Text category="h6">Услуги</Text>
@@ -63,7 +65,6 @@ export const GymDetailedPage: React.FC = () => {
           <Ionicons name="add-circle-outline" size={28} color="#3366FF" />
         </TouchableOpacity>
       </View>
-
       {gym?.services?.map(service => (
         <Card key={service.id} style={styles.serviceCard}>
           <View style={styles.serviceRow}>

@@ -18,24 +18,20 @@ export const GymCard: React.FC<Props> = ({ gym, onEdit, onPress }) => {
   );
 
   return (
-    <TouchableOpacity onPress={onPress}>
-      <Card
-        style={styles.card}
-        header={() => (
-          <View style={styles.header}>
-            <View>
-              <Text category="h6">{gym.name}</Text>
-              <Text appearance="hint" category="s2">
-                {gym.address}
-              </Text>
-            </View>
-            <EditIcon />
+    <Card style={styles.card}>
+      <TouchableOpacity onPress={onPress}>
+        <View style={styles.header}>
+          <View>
+            <Text category="h6">{gym.name}</Text>
+            <Text appearance="hint" category="s2">
+              {gym.address}
+            </Text>
           </View>
-        )}
-      >
+          <EditIcon />
+        </View>
         <Text>Категорий: {gym.services?.length || 0}</Text>
-      </Card>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </Card>
   );
 };
 
