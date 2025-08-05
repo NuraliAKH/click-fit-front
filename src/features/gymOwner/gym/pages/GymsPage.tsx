@@ -56,7 +56,6 @@ export const GymsListScreen = () => {
               setEditVisible(true);
             }}
             onPress={() => {
-              console.log("Card pressed");
               navigation.navigate("GymDetailed", { gymId: gym.id });
             }}
           />

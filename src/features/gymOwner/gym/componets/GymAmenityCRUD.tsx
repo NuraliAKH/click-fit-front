@@ -13,7 +13,6 @@ export const GymAmenityManager = ({ gymId }: Props) => {
   type GymAmenity = { id: number; amenityId: number; [key: string]: any };
   const { data: rawAmenities = {} } = useFetchGymAmenityById(gymId);
   const gymAmenities: GymAmenity[] = Object.values(rawAmenities);
-  console.log("Gym Amenities:", gymAmenities);
 
   const { mutate: createAmenity } = useCreateGymAmenity();
   const { mutate: deleteAmenity } = useDeleteGymAmenity();

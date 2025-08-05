@@ -7,6 +7,7 @@ import { useFetchGymById } from "../hooks";
 import { useDeleteService } from "../hooks/service.hook";
 import { ServiceForm } from "../componets/ServiceForm";
 import { GymAmenityManager } from "../componets/GymAmenityCRUD";
+import { UploadGymPhotoModal } from "../componets/UploadGymPhotoModal";
 
 export const GymDetailedPage: React.FC = () => {
   const route = useRoute<any>();
@@ -19,6 +20,7 @@ export const GymDetailedPage: React.FC = () => {
   const [selectedService, setSelectedService] = useState<any>(null);
   const [isCreateVisible, setCreateVisible] = useState(false);
   const [isEditVisible, setEditVisible] = useState(false);
+  const [isPhotoModalVisible, setPhotoModalVisible] = useState(false); // 👈 новое состояние
 
   const handleDelete = (id: number) => {
     Alert.alert("Удалить услугу", "Вы уверены?", [
@@ -52,11 +54,12 @@ export const GymDetailedPage: React.FC = () => {
         <Button
           appearance="outline"
           style={styles.button}
-          onPress={() => navigation.navigate("CreateStaffPage", { gymId })}
+          onPress={() => setPhotoModalVisible(true)} // 👈 открываем модал
         >
-          ➕ Добавить сотрудника
+          🖼️ Добавить фото
         </Button>
       </Card>
+
       <GymAmenityManager gymId={gymId} />
 
       <View style={styles.header}>
@@ -91,7 +94,6 @@ export const GymDetailedPage: React.FC = () => {
         </Card>
       ))}
 
-      {/* Создание услуги */}
       <Modal visible={isCreateVisible} backdropStyle={styles.backdrop} onBackdropPress={() => setCreateVisible(false)}>
         <View style={styles.modal}>
           <ServiceForm
@@ -104,7 +106,6 @@ export const GymDetailedPage: React.FC = () => {
         </View>
       </Modal>
 
-      {/* Редактирование услуги */}
       <Modal visible={isEditVisible} backdropStyle={styles.backdrop} onBackdropPress={() => setEditVisible(false)}>
         <View style={styles.modal}>
           <ServiceForm
@@ -118,6 +119,14 @@ export const GymDetailedPage: React.FC = () => {
           />
         </View>
       </Modal>
+
+      {/* Новый модал для фото */}
+      <UploadGymPhotoModal
+        gymId={gymId}
+        visible={isPhotoModalVisible}
+        onClose={() => setPhotoModalVisible(false)}
+        onSuccess={refetch}
+      />
     </ScrollView>
   );
 };
