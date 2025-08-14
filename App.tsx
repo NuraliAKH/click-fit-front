@@ -8,11 +8,15 @@ import { DefaultTheme, DarkTheme, Theme as NavigationTheme } from "@react-naviga
 import { SafeAreaView } from "react-native";
 import { ApplicationProvider } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
 const ThemedApp = () => {
-  const { isDarkMode } = useTheme();
+  const { isDarkMode, toggleTheme } = useTheme();
+  useEffect(() => {
+    toggleTheme("dark");
+  }, [toggleTheme]);
 
   const baseTheme = isDarkMode ? DarkTheme : DefaultTheme;
   const evaTheme = isDarkMode ? eva.dark : eva.light;
@@ -21,7 +25,7 @@ const ThemedApp = () => {
     ...baseTheme,
     colors: {
       ...baseTheme.colors,
-      background: isDarkMode ? "#0F172A" : "#FFFFFF",
+      background: isDarkMode ? "#191A27" : "#FFFFFF",
       primary: "#0EA5E9",
       text: isDarkMode ? "#E2E8F0" : "#1E293B",
       card: isDarkMode ? "#1E293B" : "#FFFFFF",

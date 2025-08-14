@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
-import { Text, TextInput, Button, useTheme, HelperText } from "react-native-paper";
+import { Text, useTheme, HelperText } from "react-native-paper";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,6 +8,8 @@ import Toast from "react-native-toast-message";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import Button from "../../../components/Button";
+import { Input } from "@ui-kitten/components";
 
 const registerSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -51,19 +53,17 @@ const RegisterPage = () => {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.container}>
       <View style={styles.inner}>
-        <Text style={[styles.title, { color: colors.primary }]}>Register 📝</Text>
-        <Text style={styles.subtitle}>Create a new account</Text>
+        <Text style={[styles.title, { color: "#00B1E3" }]}>Welcome back {"\n"}to CLICK-FIT</Text>
         <View style={styles.form}>
           <Controller
             name="email"
             control={control}
             render={({ field: { onChange, value } }) => (
               <>
-                <TextInput
+                <Input
                   label="Email"
                   value={value}
                   onChangeText={onChange}
-                  mode="outlined"
                   autoCapitalize="none"
                   keyboardType="email-address"
                   style={styles.input}
@@ -78,11 +78,10 @@ const RegisterPage = () => {
             control={control}
             render={({ field: { onChange, value } }) => (
               <>
-                <TextInput
+                <Input
                   label="Phone"
                   value={value}
                   onChangeText={onChange}
-                  mode="outlined"
                   keyboardType="phone-pad"
                   style={styles.input}
                 />
@@ -96,28 +95,20 @@ const RegisterPage = () => {
             control={control}
             render={({ field: { onChange, value } }) => (
               <>
-                <TextInput
-                  label="Password"
-                  value={value}
-                  onChangeText={onChange}
-                  mode="outlined"
-                  secureTextEntry
-                  style={styles.input}
-                />
+                <Input label="Password" value={value} onChangeText={onChange} secureTextEntry style={styles.input} />
                 {errors.password && <HelperText type="error">{errors.password.message}</HelperText>}
               </>
             )}
           />
 
-          <Button mode="contained" onPress={handleSubmit(onSubmit)} loading={isSubmitting} style={styles.button}>
+          <Button onPress={handleSubmit(onSubmit)} style={styles.button}>
             Register
-          </Button>
-
-          <Button mode="text" onPress={() => navigation.navigate("Login")} style={{ marginTop: 8 }}>
-            Already have an account? Login
           </Button>
         </View>
       </View>
+      <Button type="ghost" onPress={() => navigation.navigate("Login")} style={{ marginTop: 12 }}>
+        Already have an account? Login
+      </Button>
     </KeyboardAvoidingView>
   );
 };
@@ -144,7 +135,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   form: {
-    gap: 16,
+    gap: 10,
   },
   input: {
     backgroundColor: "white",
