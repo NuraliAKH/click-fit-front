@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
+import { View, StyleSheet, KeyboardAvoidingView, Platform, Image } from "react-native";
 import { Text, useTheme, HelperText } from "react-native-paper";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -109,6 +109,24 @@ const LoginPage = () => {
           <Button onPress={handleSubmit(onSubmit)} style={styles.button}>
             Login
           </Button>
+          <Text style={styles.orText}>Or Sign Up using</Text>
+          <View style={{ flexDirection: "row", justifyContent: "center", gap: 45, marginTop: 8 }}>
+            <Image
+              style={{ width: 50, height: 50 }}
+              source={require("../../../../assets/auth-icons/click.png")}
+              alt="click"
+            />
+            <Image
+              style={{ width: 50, height: 50 }}
+              source={require("../../../../assets/auth-icons/google.png")}
+              alt="google"
+            />
+            <Image
+              style={{ width: 50, height: 50 }}
+              source={require("../../../../assets/auth-icons/facebook.png")}
+              alt="facebook"
+            />
+          </View>
         </View>
       </View>
       <Button type="ghost" onPress={() => navigation.navigate("Register" as never)} style={{ marginTop: 12 }}>
@@ -151,6 +169,13 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingVertical: 6,
     borderRadius: 8,
+  },
+
+  orText: {
+    marginTop: 16,
+    textAlign: "center",
+    color: "#6B7280",
+    fontSize: 14,
   },
 });
 

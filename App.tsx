@@ -9,6 +9,7 @@ import { SafeAreaView } from "react-native";
 import { ApplicationProvider } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
 import { useEffect } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const queryClient = new QueryClient();
 
@@ -16,7 +17,7 @@ const ThemedApp = () => {
   const { isDarkMode, toggleTheme } = useTheme();
   useEffect(() => {
     toggleTheme("dark");
-  }, [toggleTheme]);
+  }, []);
 
   const baseTheme = isDarkMode ? DarkTheme : DefaultTheme;
   const evaTheme = isDarkMode ? eva.dark : eva.light;
@@ -36,10 +37,12 @@ const ThemedApp = () => {
   return (
     <ApplicationProvider {...eva} theme={evaTheme}>
       <NavigationContainer theme={theme}>
-        <SafeAreaView style={{ flex: 1 }}>
-          <AppRoutes />
-          <Toast />
-        </SafeAreaView>
+        <SafeAreaProvider>
+          <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }} edges={["top", "bottom"]}>
+            <AppRoutes />
+            <Toast />
+          </SafeAreaView>
+        </SafeAreaProvider>
       </NavigationContainer>
     </ApplicationProvider>
   );
