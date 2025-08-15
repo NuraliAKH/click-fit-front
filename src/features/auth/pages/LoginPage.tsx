@@ -11,7 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../types/RootStackParamList";
 import Button from "../../../components/Button";
-import { Input } from "@ui-kitten/components";
+import FloatingLabelInput from "../../../components/Input";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -76,7 +76,7 @@ const LoginPage = () => {
             control={control}
             render={({ field: { onChange, value } }) => (
               <>
-                <Input
+                <FloatingLabelInput
                   label="Email"
                   value={value}
                   onChangeText={onChange}
@@ -93,7 +93,14 @@ const LoginPage = () => {
             control={control}
             render={({ field: { onChange, value } }) => (
               <>
-                <Input label="Password" value={value} onChangeText={onChange} secureTextEntry style={styles.input} />
+                <FloatingLabelInput
+                  label="Password"
+                  value={value}
+                  onChangeText={onChange}
+                  secureTextEntry
+                  style={styles.input}
+                  placeholder="Enter your password"
+                />
                 {errors.password && <HelperText type="error">{errors.password.message}</HelperText>}
               </>
             )}

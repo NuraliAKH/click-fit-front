@@ -66,7 +66,6 @@ const RegisterPage = () => {
                   onChangeText={onChange}
                   autoCapitalize="none"
                   keyboardType="email-address"
-                  style={styles.input}
                 />
                 {errors.email && <HelperText type="error">{errors.email.message}</HelperText>}
               </>
@@ -78,13 +77,7 @@ const RegisterPage = () => {
             control={control}
             render={({ field: { onChange, value } }) => (
               <>
-                <Input
-                  label="Phone"
-                  value={value}
-                  onChangeText={onChange}
-                  keyboardType="phone-pad"
-                  style={styles.input}
-                />
+                <Input label="Phone" value={value} onChangeText={onChange} keyboardType="phone-pad" />
                 {errors.phone && <HelperText type="error">{errors.phone.message}</HelperText>}
               </>
             )}
@@ -95,7 +88,7 @@ const RegisterPage = () => {
             control={control}
             render={({ field: { onChange, value } }) => (
               <>
-                <Input label="Password" value={value} onChangeText={onChange} secureTextEntry style={styles.input} />
+                <Input label="Password" value={value} onChangeText={onChange} secureTextEntry />
                 {errors.password && <HelperText type="error">{errors.password.message}</HelperText>}
               </>
             )}
@@ -137,9 +130,7 @@ const styles = StyleSheet.create({
   form: {
     gap: 10,
   },
-  input: {
-    backgroundColor: "white",
-  },
+
   button: {
     marginTop: 8,
     paddingVertical: 6,
