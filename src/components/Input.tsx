@@ -25,6 +25,7 @@ type Props = Omit<TextInputProps, "onChange"> & {
 };
 
 const FloatingLabelInput: React.FC<Props> = ({
+  placeholder,
   label,
   value,
   onChangeText,
@@ -77,7 +78,8 @@ const FloatingLabelInput: React.FC<Props> = ({
         ref={inputRef}
         value={value}
         onChangeText={onChangeText}
-        placeholderTextColor="#000"
+        placeholder={placeholder}
+        placeholderTextColor="#A1A1AA"
         onFocus={e => {
           setFocused(true);
           onFocus?.(e);

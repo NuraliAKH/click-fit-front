@@ -83,6 +83,7 @@ const LoginPage = () => {
                   autoCapitalize="none"
                   keyboardType="email-address"
                   style={styles.input}
+                  placeholder="Enter your email"
                 />
                 {errors.email && <HelperText type="error">{errors.email.message}</HelperText>}
               </>
