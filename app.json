@@ -13,7 +13,10 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Это приложение использует фото для загрузки изображений зала"
+      }
     },
     "android": {
       "adaptiveIcon": {
