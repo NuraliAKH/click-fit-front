@@ -75,6 +75,7 @@ const FloatingLabelInput: React.FC<Props> = ({
     >
       {/* Сам инпут */}
       <TextInput
+        {...rest}
         ref={inputRef}
         value={value}
         onChangeText={onChangeText}

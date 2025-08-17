@@ -11,24 +11,33 @@ import GymsPage from "../features/user/gyms/pages/GymPage";
 import GymDetailPage from "../features/user/gyms/components/GymDetailPage";
 import BookingListPage from "../features/user/bookings/pages/BookingListPage";
 import FavouritesPage from "../features/user/gyms/pages/FavouritesPage";
+import CustomHeader from "../components/CustomHeader";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const TabNavigator = () => (
+const TabNavigator = ({ navigation }: any) => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
-      headerShown: true,
-      headerTitleAlign: "center",
+      header: () => (
+        <CustomHeader
+          title={route.name}
+          onPressFavourites={() => navigation.navigate("FavouritesPage")}
+          onPressNotifications={() => console.log("Notifications clicked")}
+        />
+      ),
       tabBarStyle: {
-        backgroundColor: "#fff",
+        borderTopWidth: 1,
+        borderTopColor: "#00B1E3",
+        backgroundColor: "transparent",
         height: 65,
         paddingBottom: 8,
         paddingTop: 4,
+        elevation: 0,
       },
       tabBarLabelStyle: { fontSize: 12 },
-      tabBarActiveTintColor: "#2ecc71",
-      tabBarInactiveTintColor: "#7f8c8d",
+      tabBarActiveTintColor: "#00B1E3",
+      tabBarInactiveTintColor: "#ffffff",
       tabBarIcon: ({ color, size }) => {
         let iconName: string;
 
