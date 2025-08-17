@@ -1,6 +1,6 @@
 import React from "react";
-import { View, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
-import { Button, Text, TextInput, useTheme, HelperText } from "react-native-paper";
+import { View, StyleSheet, KeyboardAvoidingView, Platform, Image } from "react-native";
+import { Text, useTheme, HelperText } from "react-native-paper";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,6 +10,8 @@ import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../types/RootStackParamList";
+import Button from "../../../components/Button";
+import FloatingLabelInput from "../../../components/Input";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -19,7 +21,6 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 const LoginPage = () => {
-  const { colors } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const {
@@ -67,22 +68,23 @@ const LoginPage = () => {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.container}>
       <View style={styles.inner}>
-        <Text style={[styles.title, { color: colors.primary }]}>Welcome Back 👋</Text>
-        <Text style={styles.subtitle}>Login to your account</Text>
+        <Text style={[styles.title, { color: "#00B1E3" }]}>Welcome to {"\n"} CLICK-FIT</Text>
+
         <View style={styles.form}>
           <Controller
             name="email"
             control={control}
             render={({ field: { onChange, value } }) => (
               <>
-                <TextInput
+                <FloatingLabelInput
                   label="Email"
                   value={value}
                   onChangeText={onChange}
-                  mode="outlined"
                   autoCapitalize="none"
                   keyboardType="email-address"
                   style={styles.input}
+                  textContentType="emailAddress"
+                  placeholder="Enter your email"
                 />
                 {errors.email && <HelperText type="error">{errors.email.message}</HelperText>}
               </>
@@ -93,24 +95,42 @@ const LoginPage = () => {
             control={control}
             render={({ field: { onChange, value } }) => (
               <>
-                <TextInput
+                <FloatingLabelInput
                   label="Password"
                   value={value}
                   onChangeText={onChange}
-                  mode="outlined"
                   secureTextEntry
                   style={styles.input}
+                  placeholder="Enter your password"
                 />
                 {errors.password && <HelperText type="error">{errors.password.message}</HelperText>}
               </>
             )}
           />
-          <Button mode="contained" onPress={handleSubmit(onSubmit)} loading={isSubmitting} style={styles.button}>
+          <Button onPress={handleSubmit(onSubmit)} style={styles.button}>
             Login
           </Button>
+          <Text style={styles.orText}>Or Sign Up using</Text>
+          <View style={{ flexDirection: "row", justifyContent: "center", gap: 45, marginTop: 8 }}>
+            <Image
+              style={{ width: 50, height: 50 }}
+              source={require("../../../../assets/auth-icons/click.png")}
+              alt="click"
+            />
+            <Image
+              style={{ width: 50, height: 50 }}
+              source={require("../../../../assets/auth-icons/google.png")}
+              alt="google"
+            />
+            <Image
+              style={{ width: 50, height: 50 }}
+              source={require("../../../../assets/auth-icons/facebook.png")}
+              alt="facebook"
+            />
+          </View>
         </View>
       </View>
-      <Button mode="text" onPress={() => navigation.navigate("Register" as never)} style={{ marginTop: 12 }}>
+      <Button type="ghost" onPress={() => navigation.navigate("Register" as never)} style={{ marginTop: 12 }}>
         Don’t have an account? Register
       </Button>
     </KeyboardAvoidingView>
@@ -127,10 +147,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
+    color: "#00B1E3",
     fontWeight: "700",
-    marginBottom: 8,
+    marginBottom: 40,
     textAlign: "center",
+    overflow: "hidden",
   },
   subtitle: {
     fontSize: 16,
@@ -139,7 +161,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   form: {
-    gap: 16,
+    gap: 10,
   },
   input: {
     backgroundColor: "white",
@@ -148,6 +170,13 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingVertical: 6,
     borderRadius: 8,
+  },
+
+  orText: {
+    marginTop: 16,
+    textAlign: "center",
+    color: "#6B7280",
+    fontSize: 14,
   },
 });
 

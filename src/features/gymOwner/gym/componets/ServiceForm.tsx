@@ -15,7 +15,7 @@ export const ServiceForm: React.FC<Props> = ({ gymId, initialValues, onSuccess }
   const isEdit = !!initialValues;
   const create = useCreateService();
   const update = useUpdateService(initialValues?.id);
-  const { data: categories = [] } = useFetchAllCategory();
+  const { data: categories } = useFetchAllCategory();
 
   const { control, handleSubmit, setValue, getValues } = useForm({
     defaultValues: {
@@ -107,7 +107,7 @@ export const ServiceForm: React.FC<Props> = ({ gymId, initialValues, onSuccess }
           Категория
         </Text>
         <View style={styles.chipWrap}>
-          {categories.map((cat: any) => (
+          {categories?.data?.map((cat: any) => (
             <Button
               key={cat.id}
               size="tiny"
