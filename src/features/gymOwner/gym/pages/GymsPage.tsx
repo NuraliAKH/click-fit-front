@@ -55,7 +55,9 @@ export const GymsListScreen = () => {
               setSelectedGym(gym);
               setEditVisible(true);
             }}
-            onPress={() => navigation.navigate("GymDetailed", { gymId: gym.id })}
+            onPress={() => {
+              navigation.navigate("GymDetailed", { gymId: gym.id });
+            }}
           />
         ))}
       </ScrollView>

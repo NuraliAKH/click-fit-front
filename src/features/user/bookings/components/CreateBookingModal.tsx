@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from "react-native";
 import { Modal, Card, Button, Input, Text, Select, SelectItem, IndexPath } from "@ui-kitten/components";
 import { Controller, useForm } from "react-hook-form";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 type Service = {
   id: number;
@@ -32,9 +32,8 @@ const CreateBookingModal = ({ visible, onDismiss, onSubmit, services, gymId }: P
   } = useForm<FormData>();
 
   const [selectedServiceIndex, setSelectedServiceIndex] = useState<IndexPath | undefined>(undefined);
-  const [date, setDate] = useState<Date | null>(null);
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [datePickerVisible, setDatePickerVisible] = useState(false);
+  const [timePickerVisible, setTimePickerVisible] = useState(false);
   const [startTime, setStartTime] = useState<string>("");
 
   const handleBooking = (data: FormData) => {
@@ -106,24 +105,19 @@ const CreateBookingModal = ({ visible, onDismiss, onSubmit, services, gymId }: P
                 rules={{ required: "Please select a date" }}
                 render={({ field: { onChange, value } }) => (
                   <>
-                    <Button appearance="outline" onPress={() => setShowDatePicker(true)} style={styles.input}>
+                    <Button appearance="outline" onPress={() => setDatePickerVisible(true)} style={styles.input}>
                       {value ? value.toDateString() : "Choose Date"}
                     </Button>
-                    {showDatePicker && (
-                      <DateTimePicker
-                        value={value || new Date()}
-                        mode="date"
-                        display="default"
-                        minimumDate={new Date()}
-                        onChange={(_, selectedDate) => {
-                          setShowDatePicker(false);
-                          if (selectedDate) {
-                            setDate(selectedDate);
-                            onChange(selectedDate);
-                          }
-                        }}
-                      />
-                    )}
+                    <DateTimePickerModal
+                      isVisible={datePickerVisible}
+                      mode="date"
+                      onConfirm={date => {
+                        setDatePickerVisible(false);
+                        onChange(date);
+                      }}
+                      onCancel={() => setDatePickerVisible(false)}
+                      minimumDate={new Date()}
+                    />
                     {errors.bookingDate && (
                       <Text status="danger" category="c1">
                         {errors.bookingDate.message}
@@ -133,7 +127,6 @@ const CreateBookingModal = ({ visible, onDismiss, onSubmit, services, gymId }: P
                 )}
               />
 
-              {/* Time Picker */}
               <Text category="label" style={{ marginTop: 16 }}>
                 Start Time
               </Text>
@@ -143,26 +136,23 @@ const CreateBookingModal = ({ visible, onDismiss, onSubmit, services, gymId }: P
                 rules={{ required: "Please select a time" }}
                 render={({ field: { onChange, value } }) => (
                   <>
-                    <Button appearance="outline" onPress={() => setShowTimePicker(true)} style={styles.input}>
+                    <Button appearance="outline" onPress={() => setTimePickerVisible(true)} style={styles.input}>
                       {value || "Choose Time"}
                     </Button>
-                    {showTimePicker && (
-                      <DateTimePicker
-                        value={new Date()}
-                        mode="time"
-                        display="default"
-                        onChange={(_, selectedDate) => {
-                          setShowTimePicker(false);
-                          if (selectedDate) {
-                            const hours = selectedDate.getHours().toString().padStart(2, "0");
-                            const minutes = selectedDate.getMinutes().toString().padStart(2, "0");
-                            const formatted = `${hours}:${minutes}`;
-                            setStartTime(formatted);
-                            onChange(formatted);
-                          }
-                        }}
-                      />
-                    )}
+                    <DateTimePickerModal
+                      isVisible={timePickerVisible}
+                      mode="time"
+                      onConfirm={date => {
+                        const hours = date.getHours().toString().padStart(2, "0");
+                        const minutes = date.getMinutes().toString().padStart(2, "0");
+                        const formatted = `${hours}:${minutes}`;
+                        setStartTime(formatted);
+                        onChange(formatted);
+                        setTimePickerVisible(false);
+                      }}
+                      onCancel={() => setTimePickerVisible(false)}
+                      is24Hour={true}
+                    />
                     {errors.startTime && (
                       <Text status="danger" category="c1">
                         {errors.startTime.message}
