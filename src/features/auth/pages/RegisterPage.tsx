@@ -7,60 +7,45 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Toast from "react-native-toast-message";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../../types/RootStackParamList";
 import Button from "../../../components/Button";
 import FloatingLabelInput from "../../../components/Input";
 
-const loginSchema = z.object({
+const registerSchema = z.object({
   email: z.string().email("Invalid email"),
+  phone: z.string().min(7, "Phone is required"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-type LoginForm = z.infer<typeof loginSchema>;
+type RegisterForm = z.infer<typeof registerSchema>;
 
-const LoginPage = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+const RegisterPage = () => {
+  const { colors } = useTheme();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<RegisterForm>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       email: "",
+      phone: "",
       password: "",
     },
   });
 
-  const onSubmit = async (data: LoginForm) => {
+  const onSubmit = async (data: RegisterForm) => {
     try {
-      const response = await axios.post("http://192.168.1.177:3000/api/auth/signin", data);
-
-      const token = response.data?.access_token;
-
-      if (!token) {
-        Toast.show({ type: "error", text1: "Login failed", text2: "Token not found in response" });
-        return;
-      }
-
-      await AsyncStorage.setItem("token", token);
-      Toast.show({ type: "success", text1: "Login successful" });
-
-      setTimeout(() => {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "UserLayout" as never }],
-        });
-      }, 200);
+      await axios.post("http://192.168.1.177:3000/api/auth/signup", data);
+      Toast.show({ type: "success", text1: "Registered successfully" });
+      navigation.navigate("Login");
     } catch (error: any) {
-      console.error("Login error:", error);
       Toast.show({
         type: "error",
-        text1: "Login failed",
-        text2: error.response?.data?.message || "Check your credentials or try again later",
+        text1: "Registration failed",
+        text2: error.response?.data?.message || "Try again later",
       });
     }
   };
@@ -68,8 +53,7 @@ const LoginPage = () => {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.container}>
       <View style={styles.inner}>
-        <Text style={[styles.title, { color: "#00B1E3" }]}>Welcome to {"\n"} CLICK-FIT</Text>
-
+        <Text style={[styles.title, { color: "#00B1E3" }]}>Welcome back {"\n"}to CLICK-FIT</Text>
         <View style={styles.form}>
           <Controller
             name="email"
@@ -82,14 +66,30 @@ const LoginPage = () => {
                   onChangeText={onChange}
                   autoCapitalize="none"
                   keyboardType="email-address"
-                  style={styles.input}
-                  textContentType="emailAddress"
-                  placeholder="Enter your email"
+                  placeholder="Input your email"
                 />
                 {errors.email && <HelperText type="error">{errors.email.message}</HelperText>}
               </>
             )}
           />
+
+          <Controller
+            name="phone"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <>
+                <FloatingLabelInput
+                  label="Phone"
+                  value={value}
+                  onChangeText={onChange}
+                  keyboardType="phone-pad"
+                  placeholder="Input your phone number"
+                />
+                {errors.phone && <HelperText type="error">{errors.phone.message}</HelperText>}
+              </>
+            )}
+          />
+
           <Controller
             name="password"
             control={control}
@@ -100,15 +100,15 @@ const LoginPage = () => {
                   value={value}
                   onChangeText={onChange}
                   secureTextEntry
-                  style={styles.input}
-                  placeholder="Enter your password"
+                  placeholder="Input password"
                 />
                 {errors.password && <HelperText type="error">{errors.password.message}</HelperText>}
               </>
             )}
           />
+
           <Button onPress={handleSubmit(onSubmit)} style={styles.button}>
-            Login
+            Register
           </Button>
           <Text style={styles.orText}>Or Sign Up using</Text>
           <View style={{ flexDirection: "row", justifyContent: "center", gap: 45, marginTop: 8 }}>
@@ -130,8 +130,8 @@ const LoginPage = () => {
           </View>
         </View>
       </View>
-      <Button type="ghost" onPress={() => navigation.navigate("Register" as never)} style={{ marginTop: 12 }}>
-        Don’t have an account? Register
+      <Button type="ghost" onPress={() => navigation.navigate("Login")} style={{ marginTop: 12 }}>
+        Already have an account? Login
       </Button>
     </KeyboardAvoidingView>
   );
@@ -147,12 +147,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    fontSize: 32,
-    color: "#00B1E3",
+    fontSize: 28,
     fontWeight: "700",
-    marginBottom: 40,
+    marginBottom: 20,
     textAlign: "center",
-    overflow: "hidden",
   },
   subtitle: {
     fontSize: 16,
@@ -163,9 +161,7 @@ const styles = StyleSheet.create({
   form: {
     gap: 10,
   },
-  input: {
-    backgroundColor: "white",
-  },
+
   button: {
     marginTop: 8,
     paddingVertical: 6,
@@ -180,4 +176,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginPage;
+export default RegisterPage;
