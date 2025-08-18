@@ -4,14 +4,20 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 interface GymCardsListProps {
   title: string;
   children: React.ReactNode;
+  onSeeMore?: () => void;
+  haveSeeMore?: boolean;
 }
 
-const GymCardsList: React.FC<GymCardsListProps> = ({ title, children }) => {
+const GymCardsList: React.FC<GymCardsListProps> = ({ title, children, haveSeeMore }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>{title}</Text>
-        <Text style={styles.seeMore}>see more </Text>
+        {haveSeeMore && (
+          <Text style={styles.seeMore} onPress={() => console.log("See more pressed")}>
+            See More
+          </Text>
+        )}
       </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>

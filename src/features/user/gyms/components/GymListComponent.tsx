@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FlatList, View, Image, TouchableOpacity, Button } from "react-native";
 import { Spinner, Card, Text, Layout } from "@ui-kitten/components";
 import { useNavigation } from "@react-navigation/native";
@@ -6,6 +6,12 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 import { useCreateFavouriteGym, useDeleteFavouriteGym, useFetchAllFavouriteGym } from "../hooks/favouriteGymHooks";
+import GymCardsList from "../../../../components/GymCardsList";
+import { useFetchAllServiceCategory } from "../../../admin/settings/hooks/serviceCategoryHooks";
+import CategoryCard from "../../../../components/CategoryCard";
+import FloatingLabelInput from "../../../../components/Input";
+import SearchInput from "../../../../components/SearchInput";
+import GymCard from "../../../../components/GymCard";
 
 type GymImage = {
   url: string;
@@ -25,21 +31,17 @@ type Props = {
 };
 
 type RootStackParamList = {
-  Gyms: undefined;
+  Gyms: { categoryId: number } | undefined;
   GymDetail: { gym: Gym };
   FavouritesPage: undefined; // Add this
 };
 
 const GymListComponent = ({ gyms, isLoading }: Props) => {
+  const [q, setQ] = useState("");
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { data: serviceCategories, isLoading: isGymsLoading } = useFetchAllServiceCategory();
 
-  const { data: favouriteGyms } = useFetchAllFavouriteGym();
-  const { mutate: createFavouriteGym } = useCreateFavouriteGym();
-  const { mutate: deleteFavouriteGym } = useDeleteFavouriteGym();
-
-  const isGymFavourite = (gymId: number) => favouriteGyms?.data.some((fav: { gymId: number }) => fav.gymId === gymId);
-
-  if (isLoading) {
+  if (isLoading || isGymsLoading) {
     return (
       <Layout style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Spinner size="giant" />
@@ -48,21 +50,44 @@ const GymListComponent = ({ gyms, isLoading }: Props) => {
   }
 
   return (
-    <Layout style={{ flex: 1 }}>
-      <TouchableOpacity
-        style={{
-          padding: 12,
-          backgroundColor: "#FF3D71",
-          borderRadius: 8,
-          margin: 16,
-          alignItems: "center",
-        }}
-        onPress={() => navigation.navigate("FavouritesPage")}
-      >
-        <Text style={{ color: "#fff", fontWeight: "bold" }}>❤️ Favourites</Text>
-      </TouchableOpacity>
+    <Layout style={{ flex: 1, backgroundColor: "transparent" }}>
+      <SearchInput
+        value={q}
+        onChangeText={setQ}
+        placeholder="Qidiring…"
+        autoCapitalize="none"
+        autoCorrect={false}
+        onSubmitEditing={() => console.log("Search:", q)}
+      />
+      <GymCardsList title="Categories" haveSeeMore={false}>
+        {serviceCategories?.data?.map((category: any) => (
+          <CategoryCard
+            key={category.id}
+            title={category.name}
+            subtitle={category.description}
+            image={category.icon || "https://via.placeholder.com/100"}
+            onPress={() => navigation.navigate("Gyms", { categoryId: category.id })}
+          />
+        ))}
+      </GymCardsList>
 
-      <FlatList
+      <GymCardsList title="Gyms" haveSeeMore={false}>
+        {gyms.map((gym: Gym) => {
+          const mainImage = gym.images.find((img: GymImage) => img.isMain)?.url;
+          const imageUrl = mainImage || "https://via.placeholder.com/100";
+          return (
+            <GymCard
+              key={gym.id}
+              id={gym.id}
+              title={gym.name}
+              subtitle={gym.address}
+              image={imageUrl}
+              onPress={() => navigation.navigate("GymDetail", { gym })}
+            />
+          );
+        })}
+      </GymCardsList>
+      {/* <FlatList
         data={gyms}
         keyExtractor={item => item.id.toString()}
         contentContainerStyle={{ padding: 16 }}
@@ -99,7 +124,7 @@ const GymListComponent = ({ gyms, isLoading }: Props) => {
             </Card>
           );
         }}
-      />
+      /> */}
     </Layout>
   );
 };

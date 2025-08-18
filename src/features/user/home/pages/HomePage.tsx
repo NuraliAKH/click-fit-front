@@ -16,12 +16,13 @@ const HomePage = () => {
   }
   return (
     <Layout style={{ flex: 1, backgroundColor: "transparent" }}>
-      <GymCardsList title="New Gyms">
+      <GymCardsList title="New Gyms" haveSeeMore={true}>
         {data?.map((gym: any) => {
           const mainImage = gym.images?.find((img: any) => img.isMain)?.url;
           const imageUrl = mainImage || "https://via.placeholder.com/100";
           return (
             <GymCard
+              id={gym.id}
               key={gym.id}
               title={gym.name}
               image={imageUrl}
