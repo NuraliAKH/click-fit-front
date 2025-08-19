@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: "transparent",
     justifyContent: "center",
+    width: "100%",
   },
   valueText: {
     fontSize: 16,

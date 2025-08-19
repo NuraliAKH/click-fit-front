@@ -117,7 +117,7 @@ const UniversalModal: React.FC<UniversalModalProps> = ({
 
                 {showClose && (
                   <TouchableOpacity onPress={onClose} accessibilityLabel="Close modal" style={styles.closeBtn}>
-                    <Ionicons name="close" size={22} />
+                    <Ionicons name="close" size={22} color={"#00B1E3"} />
                   </TouchableOpacity>
                 )}
               </View>
@@ -198,6 +198,7 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "700",
     flexShrink: 1,
+    color: "#00B1E3",
   },
   subtitle: {
     marginTop: 6,
