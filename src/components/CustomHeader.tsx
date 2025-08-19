@@ -4,13 +4,32 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 interface Props {
   title: string;
+  showBackButton?: boolean;
+  onPressBack?: () => void;
   onPressFavourites?: () => void;
   onPressNotifications?: () => void;
 }
 
-const CustomHeader: React.FC<Props> = ({ title, onPressFavourites, onPressNotifications }) => (
+const CustomHeader: React.FC<Props> = ({
+  title,
+  showBackButton = false,
+  onPressBack,
+  onPressFavourites,
+  onPressNotifications,
+}) => (
   <View style={styles.navbar}>
-    <Text style={styles.navbarTitle}>{title}</Text>
+    <View style={styles.leftSection}>
+      {showBackButton && (
+        <TouchableOpacity
+          onPress={onPressBack}
+          style={styles.iconButton}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <MaterialCommunityIcons name="arrow-left" size={32} color="#00B1E3" />
+        </TouchableOpacity>
+      )}
+      <Text style={styles.navbarTitle}>{title}</Text>
+    </View>
 
     <View style={styles.rightIcons}>
       <TouchableOpacity onPress={onPressFavourites} style={styles.iconButton}>
@@ -33,10 +52,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 15,
   },
+  leftSection: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   navbarTitle: {
     fontSize: 24,
     color: "#00B1E3",
     fontWeight: "600",
+    marginLeft: 8,
   },
   rightIcons: {
     flexDirection: "row",

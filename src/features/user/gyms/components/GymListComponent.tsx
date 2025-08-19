@@ -1,15 +1,11 @@
 import React, { useState } from "react";
-import { FlatList, View, Image, TouchableOpacity, Button } from "react-native";
-import { Spinner, Card, Text, Layout } from "@ui-kitten/components";
+import { Spinner, Layout } from "@ui-kitten/components";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import Icon from "react-native-vector-icons/FontAwesome";
 
-import { useCreateFavouriteGym, useDeleteFavouriteGym, useFetchAllFavouriteGym } from "../hooks/favouriteGymHooks";
 import GymCardsList from "../../../../components/GymCardsList";
 import { useFetchAllServiceCategory } from "../../../admin/settings/hooks/serviceCategoryHooks";
 import CategoryCard from "../../../../components/CategoryCard";
-import FloatingLabelInput from "../../../../components/Input";
 import SearchInput from "../../../../components/SearchInput";
 import GymCard from "../../../../components/GymCard";
 
@@ -19,10 +15,15 @@ type GymImage = {
 };
 
 type Gym = {
+  amenities: any[];
+  longitude: any;
+  latitude: any;
   id: number;
   name: string;
   address: string;
   images: GymImage[];
+  services: any[];
+  description: string;
 };
 
 type Props = {
@@ -33,10 +34,10 @@ type Props = {
 type RootStackParamList = {
   Gyms: { categoryId: number } | undefined;
   GymDetail: { gym: Gym };
-  FavouritesPage: undefined; // Add this
+  FavouritesPage: undefined;
 };
 
-const GymListComponent = ({ gyms, isLoading }: Props) => {
+const GymListComponent = ({ gyms = [], isLoading }: Props) => {
   const [q, setQ] = useState("");
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { data: serviceCategories, isLoading: isGymsLoading } = useFetchAllServiceCategory();

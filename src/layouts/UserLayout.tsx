@@ -66,7 +66,6 @@ const TabNavigator = ({ navigation }: any) => (
     <Tab.Screen name="Gyms" component={GymsPage} />
     <Tab.Screen name="Bookings" component={BookingListPage} />
     <Tab.Screen name="Profile" component={ProfilePage} />
-    <Tab.Screen name="Profile" component={ProfilePage} />
   </Tab.Navigator>
 );
 
