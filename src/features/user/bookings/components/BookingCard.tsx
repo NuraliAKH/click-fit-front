@@ -46,6 +46,9 @@ const getStatusStyle = (status: string) => {
 
 const styles = StyleSheet.create({
   card: {
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "#00B1E3",
     marginBottom: 12,
     borderRadius: 12,
   },
@@ -53,6 +56,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 8,
+    backgroundColor: "transparent",
   },
   service: {
     fontWeight: "600",
