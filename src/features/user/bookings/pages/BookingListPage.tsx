@@ -33,10 +33,6 @@ const BookingListPage = () => {
 
   return (
     <View style={styles.container}>
-      <Text category="h5" style={styles.title}>
-        My Bookings
-      </Text>
-
       <View style={styles.filterContainer}>
         {FILTERS.map(status => (
           <Button
