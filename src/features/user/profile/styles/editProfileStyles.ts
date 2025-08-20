@@ -7,7 +7,9 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   container: {
+    backgroundColor: "transparent",
     flex: 1,
+    gap: 12,
     padding: 20,
   },
   title: {

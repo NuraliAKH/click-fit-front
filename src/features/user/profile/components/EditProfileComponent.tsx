@@ -1,7 +1,8 @@
 import React from "react";
-import { View } from "react-native";
-import { Input, Layout, Text, Button, Spinner } from "@ui-kitten/components";
+import { Layout, Spinner } from "@ui-kitten/components";
 import { styles } from "../styles/editProfileStyles";
+import FloatingLabelInput from "../../../../components/Input";
+import Button from "../../../../components/Button";
 
 interface Props {
   form: {
@@ -25,34 +26,33 @@ const EditProfileComponent = ({ onSubmit, form, loading, onChange }: Props) => {
 
   return (
     <Layout style={styles.container}>
-      <Text category="h5" style={styles.title}>
-        Редактировать профиль
-      </Text>
-
-      <Input
+      <FloatingLabelInput
+        label="Firts Name"
         style={styles.input}
-        placeholder="Имя"
+        placeholder="Input first name"
         value={form.firstName}
         onChangeText={text => onChange("firstName", text)}
       />
 
-      <Input
+      <FloatingLabelInput
+        label="Last Name"
         style={styles.input}
-        placeholder="Фамилия"
+        placeholder="Input Last Name"
         value={form.lastName}
         onChangeText={text => onChange("lastName", text)}
       />
 
-      <Input
+      <FloatingLabelInput
+        label="Phone Number"
         style={styles.input}
-        placeholder="Телефон"
+        placeholder="Input Phone Number"
         value={form.phone}
         keyboardType="phone-pad"
         onChangeText={text => onChange("phone", text)}
       />
 
       <Button style={styles.saveButton} onPress={onSubmit}>
-        Сохранить
+        Save
       </Button>
     </Layout>
   );
