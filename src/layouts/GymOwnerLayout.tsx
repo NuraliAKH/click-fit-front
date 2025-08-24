@@ -7,26 +7,33 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import OwnerHomePage from "../features/gymOwner/home/pages/OwnerHomePage";
 import { GymsListScreen } from "../features/gymOwner/gym/pages/GymsPage";
 import { GymDetailedPage } from "../features/gymOwner/gym/pages/GymDetailedPage";
+import CustomHeader from "../components/CustomHeader"; // same as UserLayout
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const GymOwnerTabs = () => (
+const GymOwnerTabs = ({ navigation }: any) => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
-      headerShown: true,
-      headerTitleAlign: "center",
+      header: () => (
+        <CustomHeader
+          title={route.name}
+          onPressFavourites={() => console.log("Owner Favourites clicked")}
+          onPressNotifications={() => console.log("Owner Notifications clicked")}
+        />
+      ),
       tabBarStyle: {
-        backgroundColor: "#fff",
+        borderTopWidth: 1,
+        borderTopColor: "#00B1E3", // match UserLayout
+        backgroundColor: "transparent",
         height: 65,
         paddingBottom: 8,
         paddingTop: 4,
-        borderTopWidth: 0.5,
-        borderTopColor: "#ecf0f1",
+        elevation: 0,
       },
       tabBarLabelStyle: { fontSize: 12 },
-      tabBarActiveTintColor: "#2ecc71",
-      tabBarInactiveTintColor: "#7f8c8d",
+      tabBarActiveTintColor: "#00B1E3", // match UserLayout
+      tabBarInactiveTintColor: "#ffffff", // match UserLayout
       tabBarIcon: ({ color, size }) => {
         let iconName: string;
 
@@ -37,10 +44,7 @@ const GymOwnerTabs = () => (
           case "MyGyms":
             iconName = "dumbbell";
             break;
-          // case "Bookings":
-          //   iconName = "clipboard-check-outline";
-          //   break;
-          case "AdminLayout":
+          case "OwnerProfile":
             iconName = "account-cog-outline";
             break;
           default:
@@ -53,7 +57,6 @@ const GymOwnerTabs = () => (
   >
     <Tab.Screen name="Dashboard" component={OwnerHomePage} />
     <Tab.Screen name="MyGyms" component={GymsListScreen} />
-    {/* <Tab.Screen name="Bookings" component={OwnerHomePage} /> */}
     <Tab.Screen name="OwnerProfile" component={OwnerHomePage} />
   </Tab.Navigator>
 );
@@ -65,9 +68,7 @@ const GymOwnerLayout = () => {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Tabs" component={GymOwnerTabs} />
           <Stack.Screen name="EditProfile" component={OwnerHomePage} />
-          {/* <Stack.Screen name="GymDetail" component={OwnerHomePage} /> */}
           <Stack.Screen name="GymDetailed" component={GymDetailedPage} />
-          {/* другие страницы, например CreateGym, EditGym и т.д. */}
         </Stack.Navigator>
       </SafeAreaProvider>
     </PaperProvider>

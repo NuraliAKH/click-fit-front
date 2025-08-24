@@ -6,7 +6,6 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { OwnerStackParamList } from "../../../../types/RootStackParamList";
 
 const OwnerHomePage = () => {
-  const theme = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<OwnerStackParamList>>();
 
   const stats = [
@@ -34,15 +33,11 @@ const OwnerHomePage = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text variant="headlineMedium" style={styles.title}>
-        Добро пожаловать 👋
-      </Text>
-
       <View style={styles.cardsContainer}>
         {stats.map((item, index) => (
           <Card
             key={index}
-            style={[styles.card, { backgroundColor: item.color + "22" }]}
+            style={[styles.card, { backgroundColor: "transparent", borderColor: "#00B1E3", borderWidth: 1 }]}
             onPress={() => item.navigateTo && navigation.navigate({ name: item.navigateTo as any, params: undefined })}
           >
             <Card.Title
@@ -55,16 +50,6 @@ const OwnerHomePage = () => {
           </Card>
         ))}
       </View>
-
-      <View style={styles.actions}>
-        <Button
-          mode="contained"
-          icon="plus"
-          onPress={() => navigation.navigate("MyGyms")} // можешь заменить на CreateGym
-        >
-          Добавить новый зал
-        </Button>
-      </View>
     </ScrollView>
   );
 };
@@ -74,7 +59,7 @@ export default OwnerHomePage;
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: "#f4f6f8",
+    backgroundColor: "transparent",
   },
   title: {
     fontWeight: "600",
@@ -92,7 +77,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#2d3436",
+    color: "#fff",
   },
   cardSubtitle: {
     fontSize: 14,
