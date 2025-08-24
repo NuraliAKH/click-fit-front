@@ -63,10 +63,12 @@ export const GymAmenityManager = ({ gymId }: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    padding: 0,
+    backgroundColor: "transparent",
   },
   title: {
     marginBottom: 12,
+    color: "#00B1E3",
   },
   checkbox: {
     marginBottom: 8,

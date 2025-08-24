@@ -41,7 +41,7 @@ const GymOwnerTabs = ({ navigation }: any) => (
           case "Dashboard":
             iconName = "view-dashboard-outline";
             break;
-          case "MyGyms":
+          case "My Gyms":
             iconName = "dumbbell";
             break;
           case "OwnerProfile":
@@ -56,7 +56,7 @@ const GymOwnerTabs = ({ navigation }: any) => (
     })}
   >
     <Tab.Screen name="Dashboard" component={OwnerHomePage} />
-    <Tab.Screen name="MyGyms" component={GymsListScreen} />
+    <Tab.Screen name="My Gyms" component={GymsListScreen} />
     <Tab.Screen name="OwnerProfile" component={OwnerHomePage} />
   </Tab.Navigator>
 );

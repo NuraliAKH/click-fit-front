@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Dimensions } from "react-native";
 import { Modal, Layout } from "@ui-kitten/components";
 import { GymForm } from "./GymForm";
+import UniversalModal from "../../../../components/Modal";
 
 interface Props {
   visible: boolean;
@@ -11,7 +12,7 @@ interface Props {
 
 export const CreateGymModal: React.FC<Props> = ({ visible, onDismiss, onCreate }) => {
   return (
-    <Modal visible={visible} backdropStyle={styles.backdrop} onBackdropPress={onDismiss}>
+    <UniversalModal visible={visible} backdropStyle={styles.backdrop} onClose={onDismiss}>
       <KeyboardAvoidingView keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0} style={styles.keyboardContainer}>
         <Layout style={styles.container} level="1">
           <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -19,7 +20,7 @@ export const CreateGymModal: React.FC<Props> = ({ visible, onDismiss, onCreate }
           </ScrollView>
         </Layout>
       </KeyboardAvoidingView>
-    </Modal>
+    </UniversalModal>
   );
 };
 
@@ -35,7 +36,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   container: {
-    width: "150%",
+    width: "100%",
+    backgroundColor: "transparent",
     maxHeight: screenHeight * 0.8,
     borderRadius: 12,
   },

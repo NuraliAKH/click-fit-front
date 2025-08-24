@@ -1,9 +1,12 @@
 import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { useForm, Controller } from "react-hook-form";
-import { Input, Text, Button, Toggle } from "@ui-kitten/components";
+import { Text, Toggle, Button } from "@ui-kitten/components";
 import { useCreateService, useUpdateService } from "../hooks/service.hook";
 import { useFetchAllCategory } from "../hooks/categories.hook";
+import MyButton from "../../../../components/Button";
+
+import FloatingLabelInput from "../../../../components/Input";
 
 type Props = {
   gymId: number;
@@ -49,7 +52,7 @@ export const ServiceForm: React.FC<Props> = ({ gymId, initialValues, onSuccess }
         control={control}
         name="name"
         render={({ field: { onChange, value } }) => (
-          <Input
+          <FloatingLabelInput
             label="Название"
             value={value}
             onChangeText={onChange}
@@ -62,7 +65,7 @@ export const ServiceForm: React.FC<Props> = ({ gymId, initialValues, onSuccess }
         control={control}
         name="price"
         render={({ field: { onChange, value } }) => (
-          <Input
+          <FloatingLabelInput
             label="Цена (в тийинах)"
             value={value}
             onChangeText={onChange}
@@ -76,7 +79,7 @@ export const ServiceForm: React.FC<Props> = ({ gymId, initialValues, onSuccess }
         control={control}
         name="durationMinutes"
         render={({ field: { onChange, value } }) => (
-          <Input
+          <FloatingLabelInput
             label="Длительность (мин)"
             value={value}
             onChangeText={onChange}
@@ -90,7 +93,7 @@ export const ServiceForm: React.FC<Props> = ({ gymId, initialValues, onSuccess }
         control={control}
         name="capacity"
         render={({ field: { onChange, value } }) => (
-          <Input
+          <FloatingLabelInput
             label="Вместимость (людей)"
             value={value}
             onChangeText={onChange}
@@ -134,16 +137,18 @@ export const ServiceForm: React.FC<Props> = ({ gymId, initialValues, onSuccess }
         )}
       />
 
-      <Button style={styles.submit} onPress={handleSubmit(onSubmit)}>
+      <MyButton style={styles.submit} onPress={handleSubmit(onSubmit)}>
         {isEdit ? "Сохранить изменения" : "Создать услугу"}
-      </Button>
+      </MyButton>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    padding: 0,
+    backgroundColor: "transparent",
+    gap: 15,
   },
   input: {
     marginBottom: 12,

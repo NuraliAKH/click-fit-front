@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, ScrollView, StyleSheet, Alert, TouchableOpacity } from "react-native";
+import { View, ScrollView, StyleSheet, Alert, TouchableOpacity, Image, Linking } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { Text, Button, Card, Modal } from "@ui-kitten/components";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -8,6 +8,9 @@ import { useDeleteService } from "../hooks/service.hook";
 import { ServiceForm } from "../componets/ServiceForm";
 import { GymAmenityManager } from "../componets/GymAmenityCRUD";
 import { UploadGymPhotoModal } from "../componets/UploadGymPhotoModal";
+import CustomHeader from "../../../../components/CustomHeader";
+import RowCard from "../../../../components/RowCard";
+import UniversalModal from "../../../../components/Modal";
 
 export const GymDetailedPage: React.FC = () => {
   const route = useRoute<any>();
@@ -41,60 +44,107 @@ export const GymDetailedPage: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Card style={styles.card}>
-        <Text category="h5">{gym?.name}</Text>
-        <Text appearance="hint">{gym?.address || "Без адреса"}</Text>
+      <CustomHeader title={gym?.name || "Name"} />
+      {gym?.images?.length && gym.images.length > 0 ? (
+        <View style={{ backgroundColor: "transparent" }}>
+          {gym.images.find((img: any) => img.isMain)?.url ? (
+            <Image
+              source={{ uri: gym.images.find((img: any) => img.isMain)?.url }}
+              style={{ width: "100%", height: 200, borderRadius: 12 }}
+              resizeMode="cover"
+            />
+          ) : (
+            <View
+              style={{
+                width: "100%",
+                height: 200,
+                backgroundColor: "#f0f0f0",
+                borderRadius: 12,
+              }}
+            />
+          )}
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContainer}
+            style={{ marginTop: 10 }}
+          >
+            {gym.images.map((img: any, index: number) => (
+              <Image
+                key={index}
+                source={{ uri: img.url }}
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: 8,
+                  marginRight: 10,
+                }}
+                resizeMode="cover"
+              />
+            ))}
+          </ScrollView>
+        </View>
+      ) : null}
+
+      <View style={styles.card}>
+        {/* Working Hours */}
+        <Text appearance="hint">🕒 {JSON.stringify(gym?.workingHours)}</Text>
+
+        {/* Description */}
+        <Text style={styles.info}>{gym?.description || "Описание отсутствует"}</Text>
+
+        {/* Phone */}
         <Text style={styles.info}>📞 {gym?.phone || "Телефон не указан"}</Text>
-        <Text style={styles.info}>🕒 {JSON.stringify(gym?.workingHours)}</Text>
 
-        <Button style={styles.button} onPress={() => navigation.navigate("EditGymPage", { gymId })}>
-          ✏️ Редактировать зал
-        </Button>
-
-        <Button
-          appearance="outline"
-          style={styles.button}
-          onPress={() => setPhotoModalVisible(true)} // 👈 открываем модал
+        {/* Location Link */}
+        <TouchableOpacity
+          onPress={() =>
+            Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${gym?.latitude},${gym?.longitude}`)
+          }
         >
-          🖼️ Добавить фото
-        </Button>
-      </Card>
+          <Text style={[styles.info, { color: "blue", textDecorationLine: "underline" }]}>📍 Открыть на карте</Text>
+        </TouchableOpacity>
+      </View>
 
       <GymAmenityManager gymId={gymId} />
 
       <View style={styles.header}>
-        <Text category="h6">Услуги</Text>
+        <Text category="h6" style={{ color: "#00B1E3" }}>
+          Услуги
+        </Text>
         <TouchableOpacity onPress={() => setCreateVisible(true)}>
-          <Ionicons name="add-circle-outline" size={28} color="#3366FF" />
+          <Ionicons name="add-circle-outline" size={28} color="#00B1E3" />
         </TouchableOpacity>
       </View>
       {gym?.services?.map(service => (
-        <Card key={service.id} style={styles.serviceCard}>
-          <View style={styles.serviceRow}>
-            <View style={{ flex: 1 }}>
-              <Text category="s1">{service.name}</Text>
-              <Text appearance="hint">
-                💸 {service.price / 100} сум | 🕒 {service.durationMinutes} мин.
-              </Text>
-            </View>
-            <View style={styles.iconRow}>
-              <TouchableOpacity
-                onPress={() => {
-                  setSelectedService(service);
-                  setEditVisible(true);
-                }}
-              >
-                <Ionicons name="pencil" size={22} color="#3366FF" style={styles.icon} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleDelete(service.id)}>
-                <Ionicons name="trash" size={22} color="#FF3D71" style={styles.icon} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Card>
+        <RowCard title={service.name} sub1={service.description} sub2={`Price: ${service.price} so'm`} />
+        // <Card key={service.id} style={styles.serviceCard}>
+        //   <View style={styles.serviceRow}>
+        //     <View style={{ flex: 1 }}>
+        //       <Text category="s1">{service.name}</Text>
+        //       <Text appearance="hint">
+        //         💸 {service.price / 100} сум | 🕒 {service.durationMinutes} мин.
+        //       </Text>
+        //     </View>
+        //     <View style={styles.iconRow}>
+        //       <TouchableOpacity
+        //         onPress={() => {
+        //           setSelectedService(service);
+        //           setEditVisible(true);
+        //         }}
+        //       >
+        //         <Ionicons name="pencil" size={22} color="#3366FF" style={styles.icon} />
+        //       </TouchableOpacity>
+        //       <TouchableOpacity onPress={() => handleDelete(service.id)}>
+        //         <Ionicons name="trash" size={22} color="#FF3D71" style={styles.icon} />
+        //       </TouchableOpacity>
+        //     </View>
+        //   </View>
+        // </Card>
       ))}
 
-      <Modal visible={isCreateVisible} backdropStyle={styles.backdrop} onBackdropPress={() => setCreateVisible(false)}>
+      <UniversalModal visible={isCreateVisible} backdropStyle={styles.backdrop} onClose={() => setCreateVisible(false)}>
         <View style={styles.modal}>
           <ServiceForm
             gymId={gymId}
@@ -104,9 +154,9 @@ export const GymDetailedPage: React.FC = () => {
             }}
           />
         </View>
-      </Modal>
+      </UniversalModal>
 
-      <Modal visible={isEditVisible} backdropStyle={styles.backdrop} onBackdropPress={() => setEditVisible(false)}>
+      <UniversalModal visible={isEditVisible} backdropStyle={styles.backdrop} onClose={() => setEditVisible(false)}>
         <View style={styles.modal}>
           <ServiceForm
             gymId={gymId}
@@ -118,7 +168,7 @@ export const GymDetailedPage: React.FC = () => {
             }}
           />
         </View>
-      </Modal>
+      </UniversalModal>
 
       {/* Новый модал для фото */}
       <UploadGymPhotoModal
@@ -134,10 +184,12 @@ export const GymDetailedPage: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    backgroundColor: "transparent",
   },
   card: {
     marginBottom: 20,
     padding: 16,
+    backgroundColor: "transparent",
   },
   info: {
     marginTop: 6,
@@ -167,12 +219,15 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   modal: {
-    backgroundColor: "white",
-    padding: 20,
+    backgroundColor: "transparent",
+    padding: 0,
     borderRadius: 12,
-    margin: 16,
   },
   backdrop: {
     backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  scrollContainer: {
+    paddingHorizontal: 10,
+    alignItems: "center",
   },
 });

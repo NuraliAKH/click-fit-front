@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Text, Button, Layout, Spinner } from "@ui-kitten/components";
+import { Layout, Spinner } from "@ui-kitten/components";
 import { useCreateGym, useFetchAllGym } from "../hooks";
 import { Gym } from "../types/Gym";
 import { OwnerStackParamList } from "../../../../types/RootStackParamList";
 import { CreateGymModal } from "../componets/CreateGymModal";
 import { EditGymModal } from "../componets/EditGymModal";
-import { GymCard } from "../componets/GymCard";
+import Button from "../../../../components/Button";
+import RowCard from "../../../../components/RowCard";
 
 export const GymsListScreen = () => {
   const { data: gyms = [], isLoading } = useFetchAllGym();
@@ -39,19 +40,17 @@ export const GymsListScreen = () => {
   return (
     <Layout style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text category="h5" style={styles.title}>
-          Список спортзалов
-        </Text>
-
-        <Button onPress={() => setCreateVisible(true)} style={styles.createButton}>
-          Новый зал
-        </Button>
+        <Button onPress={() => setCreateVisible(true)}>New Gym</Button>
 
         {gyms.map((gym: any) => (
-          <GymCard
+          <RowCard
             key={gym.id}
-            gym={gym}
-            onEdit={() => {
+            title={gym.name}
+            sub1={gym.description}
+            sub2="Location"
+            image={gym.images?.find((img: any) => img.isMain)?.url}
+            actionIcon="edit"
+            onActionPress={() => {
               setSelectedGym(gym);
               setEditVisible(true);
             }}
@@ -77,10 +76,12 @@ export const GymsListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "transparent",
   },
   scrollContent: {
     padding: 16,
-    paddingBottom: 40, // чтобы кнопки не упирались в нижний край
+    paddingBottom: 40,
+    gap: 10, // чтобы кнопки не упирались в нижний край
   },
   loadingContainer: {
     flex: 1,
