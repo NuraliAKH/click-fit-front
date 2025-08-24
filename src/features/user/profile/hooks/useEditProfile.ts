@@ -26,6 +26,7 @@ const useEditProfile = () => {
   const onSave = async () => {
     try {
       setLoading(true);
+
       await updateProfile(form);
       Alert.alert("Успех", "Профиль обновлён");
       setSuccess(true); // <-- обновили

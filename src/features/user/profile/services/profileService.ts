@@ -10,13 +10,13 @@ export const updateProfile = async (data: any) => {
     const res = await axios.put("http://192.168.1.177:3000/api/auth/profile", data, {
       headers: {
         "Content-Type": "application/json",
+        // Add this if you need authentication
+        // Authorization: `Bearer ${token}`,
       },
     });
     return res.data;
   } catch (error: any) {
-    if (error.response) {
-    } else if (error.request) {
-    } else {
-    }
+    console.error("Update profile error:", error.response?.data || error.message);
+    throw error; // Rethrow so you can handle it in UI
   }
 };

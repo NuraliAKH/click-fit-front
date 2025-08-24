@@ -6,6 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { useDeleteFavouriteGym, useFetchAllFavouriteGym } from "../hooks/favouriteGymHooks";
+import CustomHeader from "../../../../components/CustomHeader";
 
 type GymImage = {
   url: string;
@@ -43,7 +44,8 @@ const FavouritesPage = () => {
   }
 
   return (
-    <Layout style={{ flex: 1, padding: 16 }}>
+    <Layout style={{ flex: 1, padding: 16, backgroundColor: "transparent" }}>
+      <CustomHeader title="Favourite Gyms" />
       {favouriteGyms.length === 0 ? (
         <Text category="h6" style={{ textAlign: "center", marginTop: 32 }}>
           У вас нет избранных залов
@@ -58,11 +60,21 @@ const FavouritesPage = () => {
             const imageUrl = mainImage || "https://via.placeholder.com/100";
 
             return (
-              <Card style={{ marginBottom: 16 }} onPress={() => navigation.navigate("GymDetail", { gym })}>
+              <Card
+                style={{
+                  marginBottom: 10,
+                  backgroundColor: "transparent",
+                  borderColor: "#00B1E3",
+                  borderWidth: 1,
+                  borderRadius: 15,
+                  padding: 0!,
+                }}
+                onPress={() => navigation.navigate("GymDetail", { gym })}
+              >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Image
                     source={{ uri: imageUrl }}
-                    style={{ width: 100, height: 100, borderRadius: 8, marginRight: 16 }}
+                    style={{ width: 100, height: 100, borderRadius: 8, margin: 0, marginRight: 16 }}
                   />
                   <View style={{ flex: 1 }}>
                     <Text category="h6">{gym.name}</Text>
