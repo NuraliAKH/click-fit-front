@@ -64,10 +64,6 @@ export const AdminSettingsPage = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text category="h5" style={styles.title}>
-        ⚙️ Настройки
-      </Text>
-
       <Text category="s1" style={styles.sectionTitle}>
         Основные
       </Text>
@@ -85,7 +81,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     paddingBottom: 32,
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "transparent",
   },
   title: {
     marginBottom: 16,
@@ -97,7 +93,9 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   item: {
-    backgroundColor: "#fff",
+    backgroundColor: "transparent",
+    borderColor: "#00B1E3",
+    borderWidth: 1,
     borderRadius: 8,
     marginBottom: 4,
   },

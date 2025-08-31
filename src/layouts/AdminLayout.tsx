@@ -14,6 +14,7 @@ import { AmenitySettingsPage } from "../features/admin/settings/pages/AmenitySet
 import { PromoCodeList } from "../features/admin/settings/components/PromoCodeList";
 import { ServiceCategoryList } from "../features/admin/settings/components/ServiceCategoryList";
 import { AssignRolePage } from "../features/admin/settings/components/Roles";
+import CustomHeader from "../components/CustomHeader";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -21,19 +22,20 @@ const Stack = createNativeStackNavigator();
 const AdminTabs = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
+      header: () => <CustomHeader title={route.name} />,
       headerShown: true,
       headerTitleAlign: "center",
       tabBarStyle: {
-        backgroundColor: "#fff",
+        borderTopWidth: 1,
+        borderTopColor: "#00B1E3",
+        backgroundColor: "transparent",
         height: 65,
         paddingBottom: 8,
         paddingTop: 4,
-        borderTopWidth: 0.5,
-        borderTopColor: "#ecf0f1",
       },
       tabBarLabelStyle: { fontSize: 12 },
-      tabBarActiveTintColor: "#2ecc71",
-      tabBarInactiveTintColor: "#7f8c8d",
+      tabBarActiveTintColor: "#00B1E3",
+      tabBarInactiveTintColor: "#ffffff",
       tabBarIcon: ({ color, size }) => {
         let iconName: string;
 

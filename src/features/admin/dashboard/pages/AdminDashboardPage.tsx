@@ -4,8 +4,6 @@ import { Card, Text, Avatar, Title, useTheme } from "react-native-paper";
 import { MaterialIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
 
 export const AdminDashboardPage = () => {
-  const theme = useTheme();
-
   const stats = [
     {
       title: "Пользователи",
@@ -35,8 +33,6 @@ export const AdminDashboardPage = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.greeting}>👋 Добро пожаловать, Админ!</Text>
-
       <View style={styles.statsContainer}>
         {stats.map((stat, index) => (
           <Card key={index} style={[styles.card, { backgroundColor: stat.color }]}>
@@ -64,7 +60,7 @@ export const AdminDashboardPage = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: "transparent",
   },
   greeting: {
     fontSize: 20,
@@ -108,18 +104,19 @@ const styles = StyleSheet.create({
     marginTop: 16,
     borderRadius: 16,
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: "transparent",
   },
   chartTitle: {
     fontSize: 16,
     fontWeight: "600",
     marginBottom: 8,
+    color: "#fff",
   },
   chartPlaceholder: {
     height: 160,
-    backgroundColor: "#f0f0f0",
     borderRadius: 12,
     justifyContent: "center",
+
     alignItems: "center",
   },
 });

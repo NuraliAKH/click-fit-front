@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
-import { Layout, Text, Button, Icon, Avatar, useTheme, Divider } from "@ui-kitten/components";
+import { Layout, Text, useTheme, Divider } from "@ui-kitten/components";
 import IconFA from "react-native-vector-icons/MaterialCommunityIcons";
 import { useFetchAllServiceCategory, useDeleteServiceCategory } from "../hooks/serviceCategoryHooks";
 import { CreateServiceCategoryModal } from "./CreateServiceCategoryModal";
+import Button from "../../../../components/Button";
 
 export const ServiceCategoryList = () => {
   const { data, isLoading, isError } = useFetchAllServiceCategory();
@@ -80,6 +81,9 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   itemContainer: {
+    backgroundColor: "transparent",
+    borderColor: "#00B1E3",
+    borderWidth: 1,
     marginBottom: 12,
     padding: 12,
     borderRadius: 12,

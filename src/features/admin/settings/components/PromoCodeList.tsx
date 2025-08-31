@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
-import { Text, Button, Card } from "@ui-kitten/components";
+import { Text, Card } from "@ui-kitten/components";
 import { useFetchAllPromoCode, useDeletePromoCode } from "../hooks/promoCodeHooks";
 import { CreatePromoCodeModal } from "./CreatePromoCodeModal";
 import VectorIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import Button from "../../../../components/Button";
 
 export const PromoCodeList = () => {
   const { data, isLoading, isError } = useFetchAllPromoCode();
@@ -44,19 +45,19 @@ export const PromoCodeList = () => {
       <View style={styles.metaRow}>
         {!!item.minAmount && (
           <View style={styles.chip}>
-            <VectorIcon name="currency-usd" size={16} />
+            <VectorIcon name="currency-usd" size={16} color={"#00B1E3"} />
             <Text style={{ marginLeft: 4 }}>Мин: {item.minAmount / 100} сум</Text>
           </View>
         )}
         {!!item.maxDiscount && (
           <View style={styles.chip}>
-            <VectorIcon name="sale" size={16} />
+            <VectorIcon name="sale" size={16} color={"#00B1E3"} />
             <Text style={{ marginLeft: 4 }}>Макс: {item.maxDiscount / 100} сум</Text>
           </View>
         )}
         {!!item.usageLimit && (
           <View style={styles.chip}>
-            <VectorIcon name="repeat" size={16} />
+            <VectorIcon name="repeat" size={16} color={"#00B1E3"} />
             <Text style={{ marginLeft: 4 }}>
               Использовано: {item.usageCount}/{item.usageLimit}
             </Text>
@@ -103,12 +104,10 @@ export const PromoCodeList = () => {
 const styles = StyleSheet.create({
   list: { padding: 16 },
   createButton: { margin: 16, borderRadius: 8 },
-  card: { marginBottom: 12, borderRadius: 12 },
+  card: { marginBottom: 12, borderRadius: 12, backgroundColor: "transparent", borderColor: "#00B1E3", padding: 12 },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 8,
   },
   metaRow: {
     flexDirection: "row",
@@ -117,8 +116,13 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   chip: {
-    padding: 4,
-    backgroundColor: "#f0f0f0",
+    padding: 10,
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    color: "#00B1E3",
+    borderColor: "#00B1E3",
+    flexDirection: "row",
+    alignItems: "center",
     borderRadius: 8,
   },
   center: {

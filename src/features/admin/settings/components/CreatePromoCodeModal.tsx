@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { View, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
-import { Modal, Layout, Text, Input, Button, Toggle } from "@ui-kitten/components";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { View, ScrollView, StyleSheet } from "react-native";
+import { Text, Toggle } from "@ui-kitten/components";
 import { useCreatePromoCode } from "../hooks/promoCodeHooks";
 import { PromoCodeType } from "../types/PromoCodeType";
+import UniversalModal from "../../../../components/Modal";
+import FloatingLabelInput from "../../../../components/Input";
+import DatePicker from "../../../../components/DatePicker";
+import Button from "../../../../components/Button";
 
 interface Props {
   visible: boolean;
@@ -21,9 +24,6 @@ export const CreatePromoCodeModal: React.FC<Props> = ({ visible, onDismiss }) =>
   const [validFrom, setValidFrom] = useState<Date>(new Date());
   const [validTo, setValidTo] = useState<Date>(new Date());
   const [isActive, setIsActive] = useState(true);
-
-  const [showFromPicker, setShowFromPicker] = useState(false);
-  const [showToPicker, setShowToPicker] = useState(false);
 
   const { mutate, isPending } = useCreatePromoCode();
 
@@ -58,88 +58,64 @@ export const CreatePromoCodeModal: React.FC<Props> = ({ visible, onDismiss }) =>
   };
 
   return (
-    <Modal visible={visible} backdropStyle={styles.backdrop} onBackdropPress={onDismiss}>
-      <Layout style={styles.container} level="1">
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Text category="h6" style={styles.title}>
-            Создать промокод
-          </Text>
+    <UniversalModal title="Создать промокод" visible={visible} backdropStyle={styles.backdrop} onClose={onDismiss}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <FloatingLabelInput label="Код" value={code} onChangeText={setCode} style={styles.input} />
+        <FloatingLabelInput
+          label="Тип (PERCENTAGE | FIXED | FREE_SERVICE)"
+          placeholder="Тип (PERCENTAGE | FIXED | FREE_SERVICE)"
+          value={type}
+          onChangeText={text => setType(text as PromoCodeType)}
+          style={styles.input}
+        />
+        <FloatingLabelInput
+          label="Значение"
+          placeholder="Значение"
+          keyboardType="numeric"
+          value={value}
+          onChangeText={setValue}
+          style={styles.input}
+        />
+        <FloatingLabelInput label="Описание" value={description} onChangeText={setDescription} style={styles.input} />
+        <FloatingLabelInput
+          label="Мин. сумма (тийин)"
+          placeholder="Мин. сумма (тийин)"
+          keyboardType="numeric"
+          value={minAmount}
+          onChangeText={setMinAmount}
+          style={styles.input}
+        />
+        <FloatingLabelInput
+          label="Макс. скидка (тийин)"
+          placeholder="Макс. скидка (тийин)"
+          keyboardType="numeric"
+          value={maxDiscount}
+          onChangeText={setMaxDiscount}
+          style={styles.input}
+        />
+        <FloatingLabelInput
+          label="Лимит использования"
+          placeholder="Лимит использования"
+          keyboardType="numeric"
+          value={usageLimit}
+          onChangeText={setUsageLimit}
+          style={styles.input}
+        />
 
-          <Input label="Код" value={code} onChangeText={setCode} style={styles.input} />
-          <Input
-            label="Тип (PERCENTAGE | FIXED | FREE_SERVICE)"
-            value={type}
-            onChangeText={text => setType(text as PromoCodeType)}
-            style={styles.input}
-          />
-          <Input label="Значение" keyboardType="numeric" value={value} onChangeText={setValue} style={styles.input} />
-          <Input label="Описание" value={description} onChangeText={setDescription} style={styles.input} />
-          <Input
-            label="Мин. сумма (тийин)"
-            keyboardType="numeric"
-            value={minAmount}
-            onChangeText={setMinAmount}
-            style={styles.input}
-          />
-          <Input
-            label="Макс. скидка (тийин)"
-            keyboardType="numeric"
-            value={maxDiscount}
-            onChangeText={setMaxDiscount}
-            style={styles.input}
-          />
-          <Input
-            label="Лимит использования"
-            keyboardType="numeric"
-            value={usageLimit}
-            onChangeText={setUsageLimit}
-            style={styles.input}
-          />
+        <DatePicker label="Срок от" value={validFrom} onChange={setValidFrom} containerStyle={styles.input} />
 
-          <View style={styles.row}>
-            <TouchableOpacity style={styles.dateButton} onPress={() => setShowFromPicker(true)}>
-              <Text appearance="hint">Срок от</Text>
-              <Text>{validFrom.toLocaleDateString()}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.dateButton} onPress={() => setShowToPicker(true)}>
-              <Text appearance="hint">до</Text>
-              <Text>{validTo.toLocaleDateString()}</Text>
-            </TouchableOpacity>
-          </View>
+        <DatePicker label="Срок до" value={validTo} onChange={setValidTo} containerStyle={styles.input} />
 
-          <DateTimePickerModal
-            isVisible={showFromPicker}
-            mode="date"
-            date={validFrom}
-            onConfirm={date => {
-              setValidFrom(date);
-              setShowFromPicker(false);
-            }}
-            onCancel={() => setShowFromPicker(false)}
-          />
+        <View style={styles.row}>
+          <Text>Активен</Text>
+          <Toggle checked={isActive} onChange={setIsActive} />
+        </View>
 
-          <DateTimePickerModal
-            isVisible={showToPicker}
-            mode="date"
-            date={validTo}
-            onConfirm={date => {
-              setValidTo(date);
-              setShowToPicker(false);
-            }}
-            onCancel={() => setShowToPicker(false)}
-          />
-
-          <View style={styles.row}>
-            <Text>Активен</Text>
-            <Toggle checked={isActive} onChange={setIsActive} />
-          </View>
-
-          <Button onPress={handleSubmit} disabled={isPending} style={styles.button}>
-            Создать
-          </Button>
-        </ScrollView>
-      </Layout>
-    </Modal>
+        <Button onPress={handleSubmit} disabled={isPending} style={styles.button}>
+          Создать
+        </Button>
+      </ScrollView>
+    </UniversalModal>
   );
 };
 
@@ -154,6 +130,7 @@ const styles = StyleSheet.create({
     maxHeight: "90%",
   },
   scrollContainer: {
+    gap: 12,
     paddingBottom: 100,
   },
   title: {

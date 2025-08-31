@@ -3,6 +3,8 @@ import { View, FlatList, StyleSheet } from "react-native";
 import { Avatar, Input, Card, Text, Divider } from "@ui-kitten/components";
 import { useFetchAllUser } from "../hooks";
 import Icon from "react-native-vector-icons/Feather";
+import FloatingLabelInput from "../../../../components/Input";
+import SearchInput from "../../../../components/SearchInput";
 
 export const UsersListPage = () => {
   const { data, isLoading, isError } = useFetchAllUser();
@@ -58,13 +60,7 @@ export const UsersListPage = () => {
 
   return (
     <View style={styles.container}>
-      <Input
-        placeholder="Поиск по имени, фамилии или email"
-        value={searchText}
-        onChangeText={setSearchText}
-        accessoryLeft={<Icon name="search" size={18} color="#999" />}
-        style={styles.searchbar}
-      />
+      <SearchInput placeholder="Поиск по имени, фамилии или email" value={searchText} onChangeText={setSearchText} />
       <FlatList
         data={filteredUsers}
         keyExtractor={item => item.id.toString()}
@@ -79,7 +75,8 @@ export const UsersListPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "transparent",
+    gap: 12,
   },
   searchbar: {
     margin: 16,
@@ -96,12 +93,8 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 16,
     padding: 12,
-    backgroundColor: "#ffffff",
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    elevation: 2,
+    backgroundColor: "#transparent",
+    borderColor: "#00B1E3",
   },
   userRow: {
     flexDirection: "row",
@@ -117,7 +110,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#333",
+    color: "#fff",
   },
   email: {
     fontSize: 14,

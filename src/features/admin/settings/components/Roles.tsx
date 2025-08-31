@@ -5,6 +5,7 @@ import IconFA from "react-native-vector-icons/MaterialCommunityIcons";
 import { useFetchAllUser } from "../../users/hooks";
 import { useGiveRole } from "../hooks/roleHook";
 import { Role } from "../../../../types/Roles";
+import SearchInput from "../../../../components/SearchInput";
 
 export const AssignRolePage = () => {
   const { data: userData } = useFetchAllUser();
@@ -33,12 +34,7 @@ export const AssignRolePage = () => {
         Назначение ролей
       </Text>
 
-      <Input
-        placeholder="Поиск (имя, фамилия, телефон)"
-        value={search}
-        onChangeText={setSearch}
-        style={styles.searchInput}
-      />
+      <SearchInput placeholder="Поиск (имя, фамилия, телефон)" value={search} onChangeText={setSearch} />
 
       <FlatList
         data={filteredUsers}
@@ -89,22 +85,25 @@ export const AssignRolePage = () => {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "transparent",
+    gap: 12,
     flex: 1,
     padding: 16,
   },
   title: {
-    marginBottom: 12,
+    color: "#00B1E3",
+    marginBottom: 16,
     fontWeight: "bold",
   },
   searchInput: {
     marginBottom: 16,
   },
   userItem: {
+    borderWidth: 1,
     marginBottom: 12,
-    borderRadius: 8,
+    borderRadius: 16,
     overflow: "hidden",
+    backgroundColor: "transparent",
   },
-  list: {
-    paddingBottom: 20,
-  },
+  list: {},
 });

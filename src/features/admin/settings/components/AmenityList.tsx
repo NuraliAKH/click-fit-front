@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { View, StyleSheet, FlatList, Alert, KeyboardAvoidingView, Platform } from "react-native";
-import { Input, Button, Card, Icon, Modal, Text, useTheme } from "@ui-kitten/components";
+import { Input, Card, Modal, Text, useTheme } from "@ui-kitten/components";
 import IconFA from "react-native-vector-icons/FontAwesome";
 import { useCreateAmenity, useDeleteAmenity, useFetchAllAmenity } from "../hooks/amenityHooks";
+import Button from "../../../../components/Button";
+import UniversalModal from "../../../../components/Modal";
+import FloatingLabelInput from "../../../../components/Input";
 
 export const AmenityList = () => {
   const [visible, setVisible] = useState(false);
@@ -54,7 +57,7 @@ export const AmenityList = () => {
   );
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1, width: "100%" }}>
       <View style={styles.container}>
         <Button onPress={() => setVisible(true)} style={styles.addButton}>
           Добавить удобство
@@ -66,16 +69,30 @@ export const AmenityList = () => {
           <FlatList data={amenities?.data} keyExtractor={item => item.id.toString()} renderItem={renderItem} />
         )}
 
-        <Modal visible={visible} backdropStyle={styles.backdrop} onBackdropPress={() => setVisible(false)}>
-          <Card disabled={true} style={styles.modal}>
-            <Text category="h6" style={{ marginBottom: 12 }}>
-              Новое удобство
-            </Text>
-
-            <Input placeholder="Название" value={name} onChangeText={setName} style={styles.input} />
-            <Input placeholder="Ключ (key)" value={key} onChangeText={setKey} style={styles.input} />
-            <Input
+        <UniversalModal
+          title="Добавить удобство"
+          visible={visible}
+          backdropStyle={styles.backdrop}
+          onClose={() => setVisible(false)}
+        >
+          <View style={styles.modal}>
+            <FloatingLabelInput
+              label="Название"
+              placeholder="Название"
+              value={name}
+              onChangeText={setName}
+              style={styles.input}
+            />
+            <FloatingLabelInput
+              label="Ключ (key)"
+              placeholder="Ключ (key)"
+              value={key}
+              onChangeText={setKey}
+              style={styles.input}
+            />
+            <FloatingLabelInput
               placeholder="Иконка (например: wifi, bath, etc)"
+              label="Иконка (например: wifi, bath, etc)"
               value={icon}
               onChangeText={setIcon}
               style={styles.input}
@@ -84,8 +101,8 @@ export const AmenityList = () => {
             <Button onPress={handleCreate} style={{ marginTop: 16 }}>
               Сохранить
             </Button>
-          </Card>
-        </Modal>
+          </View>
+        </UniversalModal>
       </View>
     </KeyboardAvoidingView>
   );
@@ -94,13 +111,18 @@ export const AmenityList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    gap: 12,
   },
   addButton: {
     marginBottom: 16,
   },
   card: {
     marginBottom: 12,
+    borderRadius: 8,
+    backgroundColor: "transparent",
+    borderColor: "#00B1E3",
+    borderWidth: 1,
+    alignSelf: "stretch",
   },
   cardContent: {
     flexDirection: "row",
@@ -112,6 +134,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
   },
   modal: {
+    gap: 12,
     padding: 20,
     borderRadius: 12,
     width: 320,
